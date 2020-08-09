@@ -1,5 +1,5 @@
 import React from 'react';
-import WishListContainer from './WishListContainer';
+import WishlistContainer from './WishlistContainer';
 import MessageList from './MessageList';
 
 const style = {
@@ -10,7 +10,7 @@ const style = {
 const HomeMain = () => {
     return ( 
         <div style={style}>
-            <WishListContainer />
+            <WishlistContainer />
             <MessageList />
         </div>
     );

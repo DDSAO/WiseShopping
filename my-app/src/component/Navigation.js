@@ -11,6 +11,7 @@ const style = {
     height: "5%",
     backgroundColor: "white",
     display: "flex",
+    borderBottom: "1px solid black"
 }
 const styleLeft = {
     display: "flex",

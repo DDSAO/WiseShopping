@@ -4,14 +4,14 @@ import {
     TOGGLE_MENU,
 } from "./actionTypes"
 
-export const showMenu = () => {
+export const showMenu = () => ({
     type: SHOW_MENU
-}
+})
 
-export const hideMenu = () => {
+export const hideMenu = () => ({
     type: HIDE_MENU
-}
+})
 
-export const toggleMenu = () => {
+export const toggleMenu = () => ({
     type: TOGGLE_MENU
-}
+})

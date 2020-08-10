@@ -1,6 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, { useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux'
-import { addWishlist, addExample } from "../redux"
+import { addExample } from "../redux"
+
+import WishlistCard from "./WishlistCard"
 
 const style = {
     width: "70%",
@@ -10,51 +12,21 @@ const style = {
     justifyContent: "flex-start",
 }
 
-const WishlistCard = () => {
-    const styleCard = {
-        width: "300px",
-        height: "185px",
-        background: "white",
-        border: "1px solid black",
-        padding: "10px",
-    }
-    const styleCardHovered = {
-        ...styleCard,
-        background: "#DCDCDC"
-    }
 
-    const [isCardHovered, setCardHovered] = useState(false);
 
-    return (
-        <div 
-            style={isCardHovered ? styleCardHovered : styleCard}
-            onMouseEnter={() => setCardHovered(true)}
-            onMouseLeave={() => setCardHovered(false)}
-        >
-                <span>Title</span>
-                <ul>
-                    <li>Item 1</li>
-                    <li>Item 2</li>
-                </ul>
-        </div>
-    )
-}
 
 const WishlistContainer = () => {
     const dispatch = useDispatch()
-    
-    const wishlists = useSelector(state => state.wishlistReducer.wishlists)
-    
-    useEffect(() => {
-        dispatch(addExample())
-        console.log('container did mount')
-        console.log(wishlists)
-    }, [])
-    
+    const wishlists = useSelector(state => state.wishlist.wishlists)
+    useEffect(() => {dispatch(addExample())}, [])
+
     return (  
+        
         <div style={style}>
             <div>
-                <WishlistCard />
+                <span>{JSON.stringify(wishlists)}</span>
+                <span>{String(wishlists.length === 0)}</span>
+                {! wishlists.length ? "" : wishlists.map((item, index) => <WishlistCard key={index} data={item}/>)}
             </div>
         </div>
     );

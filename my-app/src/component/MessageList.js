@@ -77,7 +77,6 @@ const MessageContainer = (props) => {
 }
  
 
-
 const MessageList = () => {
     return (  
         <div style={style}>

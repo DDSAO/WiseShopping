@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { addWishlist, addExample } from "../redux"
 
 const style = {
     width: "70%",
@@ -22,7 +24,7 @@ const WishlistCard = () => {
     }
 
     const [isCardHovered, setCardHovered] = useState(false);
-    
+
     return (
         <div 
             style={isCardHovered ? styleCardHovered : styleCard}
@@ -39,6 +41,16 @@ const WishlistCard = () => {
 }
 
 const WishlistContainer = () => {
+    const dispatch = useDispatch()
+    
+    const wishlists = useSelector(state => state.wishlistReducer.wishlists)
+    
+    useEffect(() => {
+        dispatch(addExample())
+        console.log('container did mount')
+        console.log(wishlists)
+    }, [])
+    
     return (  
         <div style={style}>
             <div>

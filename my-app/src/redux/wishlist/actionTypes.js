@@ -1,0 +1,2 @@
+export const ADD_WISHLIST = "ADD_WISHLIST"
+export const EXAMPLE_WISHLIST = "EXAMPLE_WISHLIST"

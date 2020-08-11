@@ -1,21 +1,36 @@
 import React, { useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from "react-router-dom";
 import { addExample } from "../redux"
 
 import WishlistCard from "./WishlistCard"
+import Card from './Card';
+
+//icon
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import HistoryIcon from '@material-ui/icons/History';
+
+
 
 const style = {
     width: "70%",
-    padding: "3%",
+    padding: "2%",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-around",
+    alignContent: "flex-start",
+    flexWrap : "wrap",
+}
+
+const styleCardIcon = {
+    color: "#555555",
+    fontSize: "70",
 }
 
 
-
-
 const WishlistContainer = () => {
+    const history = useHistory()
     const dispatch = useDispatch()
     const wishlists = useSelector(state => state.wishlist.wishlists)
     useEffect(() => {dispatch(addExample())}, [])
@@ -23,11 +38,22 @@ const WishlistContainer = () => {
     return (  
         
         <div style={style}>
-            <div>
-                <span>{JSON.stringify(wishlists)}</span>
-                <span>{String(wishlists.length === 0)}</span>
-                {! wishlists.length ? "" : wishlists.map((item, index) => <WishlistCard key={index} data={item}/>)}
-            </div>
+
+            
+            {! wishlists.length ? "" : wishlists.map((item, index) => <WishlistCard key={index} data={item}/>)}
+            <Card onClickF = {() => history.push('/addNewWishlist')}>
+                <AddCircleOutlineIcon  style={styleCardIcon} 
+                    text={"Create New Wishlist"}
+                />
+            </Card>
+            <Card onClickF = {() => history.push('/pastWishlist')}>
+                <HistoryIcon style={styleCardIcon} 
+                    text={"View Past Wishlists"}/>
+            </Card>
+            <Card />
+
+
+            
         </div>
     );
 }

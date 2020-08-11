@@ -5,7 +5,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
 } from "react-router-dom";
 
 
@@ -13,6 +12,8 @@ import Navigation from './component/Navigation'
 import NavMenu from './component/NavMenu'
 import HomeMain from './component/HomeMain';
 import NewWishlist from './component/NewWishlist'
+import PastWishlist from './component/PastWishlist';
+import ViewWishlist from './component/ViewWishlist';
 
 
 
@@ -27,6 +28,12 @@ function App() {
         </Route>
         <Route path="/addNewWishlist">
           <NewWishlist />
+        </Route>
+        <Route path="/pastWishlist">
+          <PastWishlist />
+        </Route>
+        <Route path="/viewWishlist">
+          <ViewWishlist />
         </Route>
       </Switch>
         

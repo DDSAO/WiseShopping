@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
+import { useDispatch } from 'react-redux';
+import { toggleMenu } from '../redux/interface/interfaceActions';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -29,13 +31,30 @@ const styleIcon = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: "0px 16px"
+    margin: "0px 10px",
+    padding: "5px",
+    background: "white",
+    borderRadius: "5px",
+
+}
+const styleIconHovered = {
+    ...styleIcon,
+    background: "#DCDCDC",
 }
 
 const LeftContainer = () => {
+    const [isHovered, setHovered] = useState(false)
+    const dispatch = useDispatch()
     return ( 
-    <div style={styleLeft}>
-        <span style={styleIcon}><MenuIcon/></span>
+    <div style = {styleLeft}>
+        <span
+            style = {isHovered ? styleIconHovered : styleIcon}
+            onMouseEnter = {() => setHovered(true)}
+            onMouseLeave = {() => setHovered(false)}
+            onClick = {() => dispatch(toggleMenu())}
+        >
+            <MenuIcon/>
+        </span>
     </div> );
 }
 

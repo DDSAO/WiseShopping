@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CardStatus from './CardStatus';
 
 const styleCard = {
     width: "300px",
@@ -6,6 +7,7 @@ const styleCard = {
     background: "white",
     border: "1px solid black",
     padding: "10px",
+    margin: "10px 0"
 }
 
 const styleCardHovered = {
@@ -24,8 +26,6 @@ const styleMore = {
 
 
 const WishlistCard = (props) => {
-    
-
     const [isCardHovered, setCardHovered] = useState(false);
 
     return (
@@ -34,18 +34,25 @@ const WishlistCard = (props) => {
             onMouseEnter={() => setCardHovered(true)}
             onMouseLeave={() => setCardHovered(false)}
         >
-                <span>{props.data.name}</span>
-                <ul>
-                    {props.data.items.map((item, index) => {
-                        if (index <= 5) {
-                            return (<li key={index}>{item.name}</li>)
-                        }
-                    })}
-                </ul>
-                {props.data.items.length > 3 ? 
-                    (<div style={styleMore}><p style={{margin:"0"}}>Read More ...</p></div>) : ""}
+            <CardStatus wid={props.data.id}/>
+            <span>{props.data.name}</span>
+            <ul>
+                {props.data.items.map((item, index) => {
+                    if (index <= 3) {
+                        return (<li key={index}>{item.name}</li>)
+                    }
+                })}
+            </ul>
+            {props.data.items.length > 3 ? 
+                (<div style={styleMore}>
+                    <p style={{margin:"0"}}>
+                        {props.data.items.length - 4} more items ...
+                    </p>
+                </div>) : ""}
+            
         </div>
+        
     )
 }
 
-export default WishlistCard
+export default WishlistCard;

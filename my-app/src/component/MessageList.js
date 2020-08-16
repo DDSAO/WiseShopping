@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
+import HoverBox from './HoverBox';
 
 const style = {
     width: "30%",
@@ -41,24 +42,23 @@ const MessageCard = (props) => {
         width: "auto"
     }
 
-    const [isCardHovered, setCardHovered] = useState(false);
     const [isTrashHovered, setTrashHovered] = useState(false);
 
     return (  
-        <div 
-            style={isCardHovered ? styleCardHovered : styleCard}
-            onMouseEnter={() => setCardHovered(true)}
-            onMouseLeave={() => setCardHovered(false)}
+        
+        <HoverBox
+            defaultStyle={styleCard}
+            hoveredStyle={styleCardHovered}
         >
-                <div>{props.text}</div>
-                <div 
-                    style={iconStyle} 
-                    onMouseEnter={() => setTrashHovered(true)}
-                    onMouseLeave={() => setTrashHovered(false)}
-                >
-                    {isTrashHovered ? <DeleteOutlined /> : <DeleteIcon />}
-                </div>   
-        </div>
+            <div>{props.text}</div>
+            <div 
+                style={iconStyle} 
+                onMouseEnter={() => setTrashHovered(true)}
+                onMouseLeave={() => setTrashHovered(false)}
+            >
+                {isTrashHovered ? <DeleteOutlined /> : <DeleteIcon />}
+            </div> 
+        </HoverBox> 
     );
 }
 

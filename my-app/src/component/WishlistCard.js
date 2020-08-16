@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CardStatus from './CardStatus';
+import HoverBox from './HoverBox';
 
 const styleCard = {
     width: "300px",
@@ -29,10 +30,10 @@ const WishlistCard = (props) => {
     const [isCardHovered, setCardHovered] = useState(false);
 
     return (
-        <div 
-            style={isCardHovered ? styleCardHovered : styleCard}
-            onMouseEnter={() => setCardHovered(true)}
-            onMouseLeave={() => setCardHovered(false)}
+        <HoverBox
+            defaultStyle={styleCard}
+            hoveredStyle={styleCardHovered}
+            onClickF={props.onClickF}
         >
             <CardStatus wid={props.data.id}/>
             <span>{props.data.name}</span>
@@ -49,9 +50,7 @@ const WishlistCard = (props) => {
                         {props.data.items.length - 4} more items ...
                     </p>
                 </div>) : ""}
-            
-        </div>
-        
+        </HoverBox>
     )
 }
 

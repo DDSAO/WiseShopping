@@ -1,3 +1,19 @@
+//wishlist
 export const ADD_WISHLIST = "ADD_WISHLIST"
 export const EXAMPLE_WISHLIST = "EXAMPLE_WISHLIST"
 export const REMOVE_WISHLIST = "REMOVE_WISHLIST"
+
+//item in wishlist
+export const UNSELECT_ITEM = "UNSELECT_ITEM"
+export const SELECT_ITEM = "SELECT_ITEM"
+export const TOGGLE_ITEM = "TOGGLE_ITEM"
+
+//New Wishlist
+export const CREATE_NEW_WISHLIST = "CREATE_NEW_WISHLIST"
+export const CLEAR_DRAFT = "CLEAR_DRAFT"
+export const CREATE_NEW_ITEM = "CREATE_NEW_ITEM"
+
+export const SAVE_DRAFT_TITLE = "SAVE_DRAFT_TITLE"
+export const ADD_WISHLIST_FROM_DRAFT = "ADD_WISHLIST_FROM_DRAFT"
+
+export const DELETE_ITEM_IN_NEW = "DELETE_ITEM_IN_NEW"

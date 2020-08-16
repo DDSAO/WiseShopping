@@ -6,6 +6,7 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import { useSelector } from 'react-redux';
 
 
 import Navigation from './component/Navigation'
@@ -14,15 +15,22 @@ import HomeMain from './component/HomeMain';
 import NewWishlist from './component/NewWishlist'
 import PastWishlist from './component/PastWishlist';
 import ViewWishlist from './component/ViewWishlist';
+import Empty from './component/Empty'
+import Notification from './component/Notification';
+
+
 
 
 
 function App() {
+  let shouldShow = useSelector(state => state.interface.notification.shouldShow)
   return (
     <Router>
       <Navigation />
       <NavMenu />
+      {shouldShow ? <Notification /> : null}
       <Switch>
+        
         <Route exact path="/">
           <HomeMain />
         </Route>
@@ -32,8 +40,11 @@ function App() {
         <Route path="/pastWishlist">
           <PastWishlist />
         </Route>
-        <Route path="/viewWishlist">
+        <Route path="/viewWishlist/:wid">
           <ViewWishlist />
+        </Route>
+        <Route path='*' >
+          <Empty />
         </Route>
       </Switch>
         

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { removeWishlist } from '../redux'
 
 //icons
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
+import HoverBox from './HoverBox';
 
 
 
@@ -56,24 +57,27 @@ const styleIcon = {
 }
 
 const CardStatus = (props) => {
-    const [isEditHovered, setEditHovered] = useState(false)
-    const [isDeleteHovered, setDeleteHovered] = useState(false)
+
     const dispatch = useDispatch()
     return (
         <div style={style}>
-            <div 
-                style = {isEditHovered ? styleLeftHovered : styleLeft}
-                onMouseEnter = {() => setEditHovered(true)}
-                onMouseLeave = {() => setEditHovered(false)}
+
+            <HoverBox
+                defaultStyle={styleLeft}
+                hoveredStyle={styleLeftHovered}
             >
-                <EditIcon style={styleIcon}/></div>
-            <div 
-                style = {isDeleteHovered ? styleRightHovered : styleRight}
-                onMouseEnter = {() => setDeleteHovered(true)}
-                onMouseLeave = {() => setDeleteHovered(false)}
-                onClick = {() => {dispatch(removeWishlist(props.wid))}}
+                <EditIcon style={styleIcon}/>
+            </HoverBox>
+            <HoverBox
+                defaultStyle={styleRight}
+                hoveredStyle={styleRightHovered}
+                onClickF = {e => {
+                    e.stopPropagation()
+                    dispatch(removeWishlist(props.wid))}}
             >
-                <DeleteOutlined style={styleIcon} /></div>
+                <DeleteOutlined style={styleIcon} />
+            </HoverBox>
+                
         </div>
     )
 }

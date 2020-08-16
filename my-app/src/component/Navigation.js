@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleMenu } from '../redux/interface/interfaceActions';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
+import { addExample } from '../redux/wishlist/wishlistActions';
+import HoverBox from './HoverBox';
 const data = {
     name: "ddsao"
 }
@@ -28,6 +30,7 @@ const styleRight = {
 }
 
 const styleIcon = {
+    width:"50px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -43,18 +46,16 @@ const styleIconHovered = {
 }
 
 const LeftContainer = () => {
-    const [isHovered, setHovered] = useState(false)
     const dispatch = useDispatch()
     return ( 
     <div style = {styleLeft}>
-        <span
-            style = {isHovered ? styleIconHovered : styleIcon}
-            onMouseEnter = {() => setHovered(true)}
-            onMouseLeave = {() => setHovered(false)}
-            onClick = {() => dispatch(toggleMenu())}
+        <HoverBox
+            defaultStyle={styleIcon}
+            hoveredStyle={styleIconHovered}
+            onClickF={() => dispatch(toggleMenu())}
         >
             <MenuIcon/>
-        </span>
+        </HoverBox>
     </div> );
 }
 
@@ -68,6 +69,11 @@ const RightContainer = (prop) => {
 }
 
 const Navigation = () => {
+
+    const dispatch = useDispatch()
+    useEffect(() => {dispatch(addExample())}, [])
+
+
     return ( 
         <div style={style}>
             <LeftContainer />

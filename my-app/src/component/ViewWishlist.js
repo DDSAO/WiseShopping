@@ -1,17 +1,19 @@
 import React from 'react';
-import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useParams, useHistory } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 
 import ViewItemCard from './ViewItemCard';
 import Empty from './Empty';
 import HoverBox from './HoverBox';
+import { jumpTo } from '../redux';
 
 
 
 
 const styleFrame = {
     margin: "auto",
-    height:"95%",
+    paddingTop:"5%",
+    height:"100%",
     width: "80%",
     borderLeft:"1px solid black",
     borderRight:"1px solid black",
@@ -73,13 +75,14 @@ const styleButtonHovered = {
 
 const ViewWishlist = (props) => {
     let { wid } = useParams()
+    const history = useHistory()
+    const dispatch = useDispatch()
     const wishlist = useSelector(state => state.wishlist.wishlists[wid])
-
+    console.log(wishlist)
     if (wishlist === undefined) {
         return <Empty message="No wishlist found"/>
     }
 
-    console.log(wishlist)
     let date = new Date(wishlist.createdDate)
     let displayDate =date.getDate( ) + '/' + (date.getMonth( ) + 1)+'/'+ date.getFullYear( );
     
@@ -90,14 +93,18 @@ const ViewWishlist = (props) => {
             <div style={styleDate}>Created at {displayDate}</div>
         </div>
         <div style={styleCardFrame}>
-            {wishlist.items.map((item, index)=>
-                <ViewItemCard key={index} name={item.name} status={item.status}/>
+            {Object.values(wishlist.items).map((item, index)=>
+                <ViewItemCard key={item.iid} name={item.name} 
+                    status={item.status} wid={wid} iid={item.iid}/>
             )}
         </div>
         <div style={styleButtonFrame}>
             <HoverBox
                 defaultStyle={styleButton}
                 hoveredStyle={styleButtonHovered}
+                onClickF={()=>{
+                    dispatch(jumpTo('home'))
+                    history.push('/')}}
             >Back</HoverBox>
             <HoverBox
                 defaultStyle={styleButton}

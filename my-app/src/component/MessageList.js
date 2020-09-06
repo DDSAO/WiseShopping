@@ -2,9 +2,16 @@ import React, {useState} from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
 import HoverBox from './HoverBox';
+import { useSelector } from 'react-redux';
 
 const style = {
     width: "30%",
+}
+
+const styleContainer = {
+    borderLeft: "1px solid black",
+    padding: "20px",
+    height: "80%",
 }
 
 const MessageTitle = () => {
@@ -25,13 +32,14 @@ const MessageTitle = () => {
 
 const MessageCard = (props) => {
     const styleCard = {
-        border: "1px solid black",
+        border: "1px solid rgba(0,0,0,0.2)",
         padding: "10px",
         height: "auto",
         display:"flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center"
+        alignItems: "center",
+        backdropFilter: "blur(20px)"
     }
     const styleCardHovered = {
         ...styleCard,
@@ -64,26 +72,29 @@ const MessageCard = (props) => {
 
 const MessageContainer = (props) => {
     const style = {
-        borderLeft: "1px solid black",
-        padding: "20px",
-        height: "80%",
+        
     }
     return (
         <div style={style}>
             {props.children}
         </div>
-       
     );
 }
  
-
+const toDays = (second) => {
+    return Math.floor((Date.now() - second) / 86400)
+}
 const MessageList = () => {
+    const messages = useSelector(state => state.notification)
+    console.log(messages)
     return (  
         <div style={style}>
           <MessageTitle />
-          <MessageContainer>
-            <MessageCard text="egg will expired in 3 days"/>
-          </MessageContainer>
+          <div style={styleContainer}>
+            {Object.values(messages).map((item, index) => 
+                <MessageCard key={item.nid} text={item.name + " is bought "+ toDays(item.createdDate) + " days ago"}/>)
+            }
+          </div>
           
         </div>
     );

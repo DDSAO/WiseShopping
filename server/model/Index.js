@@ -1,39 +1,8 @@
-const { getIndex } = require('./Connect')
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-const getWishlistIndex = async (data) => {
-    const index = await getIndex()
-    return index.find({}).toArray().then((result)=>{
-        console.log(result[0].wishlistId)
-        return result[0].wishlistId
-    }, ()=>"get wishlist index wrong")  
-}
+var IndexSchema = new Schema({
+    userIndex: {type:Number, require:true}
+})
 
-const incrementWishlistIndex = async () => {
-    const index = await getIndex()
-    return index.update({}, {$inc : {wishlistId : 1}})
-}
-
-const getUserIndex = async (data) => {
-    const index = await getIndex()
-    return index.find({}).toArray().then((result)=>{
-        console.log(result[0].wishlistId)
-        return result[0].userId
-    }, ()=>"get wishlist index wrong")  
-}
-
-const incrementUserIndex = async () => {
-    const index = await getIndex()
-    return index.update({}, {$inc : {userlistId : 1}})
-}
-
-
-const reset = async () => {
-    const index = await getIndex()
-    return index.deleteMany({}).then(()=>index.insertOne({
-        wishlistId : 0,
-        userId : 0,
-    }))
-    
-}
-
-module.exports = {getWishlistIndex, incrementWishlistIndex, getUserIndex, incrementUserIndex, reset}
+module.exports = mongoose.model('Index', IndexSchema)

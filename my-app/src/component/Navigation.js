@@ -7,15 +7,21 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { addExample } from '../redux/wishlist/wishlistActions';
 import HoverBox from './HoverBox';
+
+const backgroundColor = "rgba(255,255,255,0.5)"
+
 const data = {
     name: "ddsao"
 }
 
 const style = {
+    position: "fixed",
+    top:"0",
     height: "5%",
-    backgroundColor: "white",
+    background: "inherit",
     display: "flex",
-    borderBottom: "1px solid black"
+    borderBottom: "1px solid black",
+    backdropFilter: "blur(20px) saturate(80%)",
 }
 const styleLeft = {
     display: "flex",
@@ -36,7 +42,7 @@ const styleIcon = {
     alignItems: "center",
     margin: "0px 10px",
     padding: "5px",
-    background: "white",
+    background: "inherit",
     borderRadius: "5px",
 
 }
@@ -63,7 +69,13 @@ const RightContainer = (prop) => {
     return ( 
     <div style={styleRight}>
         <p>Welcome, {prop.name}</p>
-        <span style={styleIcon}><AccountCircleIcon/></span>
+        <HoverBox
+            defaultStyle={styleIcon}
+            hoveredStyle={styleIconHovered}
+            onClickF={() => alert('user')}
+        >
+            <AccountCircleIcon/>
+        </HoverBox>
     </div> 
     );
 }
@@ -71,8 +83,7 @@ const RightContainer = (prop) => {
 const Navigation = () => {
 
     const dispatch = useDispatch()
-    useEffect(() => {dispatch(addExample())}, [])
-
+    //useEffect(() => {dispatch(addExample())}, [])
 
     return ( 
         <div style={style}>

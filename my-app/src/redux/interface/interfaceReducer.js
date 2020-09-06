@@ -3,21 +3,17 @@ import {
     HIDE_MENU,
     TOGGLE_MENU,
     SHOW_NOTIFICATION,
-    HIDE_NOTIFICATION
+    HIDE_NOTIFICATION,
+    JUMP_TO
 } from "./actionTypes"
 
 const initState = {
     showMenu: false,
     notification : {
         shouldShow: false,
-        message: "this is the message",
-        onConfirm: () => {
-            console.log("confirmed")
-        },
-        onCancel: () => {
-            console.log("canceled")
-        }
-    }
+    },
+    isLoggedIn: true,
+    currentPage: "home",
 }
 
 const showNotification = (state, action) => {
@@ -43,6 +39,13 @@ const hideNotification = (state, action) => {
     }
 }
 
+const jumpTo = (state, action) => {
+    return {
+        ...state,
+        currentPage: action.currentPage,
+    }
+}
+
 const interfaceReducer = (state = initState, action) => {
     switch(action.type) {
         case SHOW_MENU : return {
@@ -59,6 +62,7 @@ const interfaceReducer = (state = initState, action) => {
         }
         case SHOW_NOTIFICATION : return showNotification(state, action)
         case HIDE_NOTIFICATION : return hideNotification(state, action)
+        case JUMP_TO: return jumpTo(state, action)
         default: return state
     }
 }

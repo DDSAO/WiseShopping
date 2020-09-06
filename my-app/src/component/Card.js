@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
+import AnimatedBorder from './AnimatedBorder';
 
 
 const styleCard = {
     width: "300px",
     height: "185px",
-    background: "white",
-    border: "1px solid black",
+    border: "1px solid rgba(0,0,0,0.2)",
     padding: "10px",
-    margin: "10px 0",
+    marginTop: "20px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    
+    background: "inherit",
+    backdropFilter: "blur(20px) brightness(110%)",
 }
 
 const styleCardHovered = {
     ...styleCard,
-    background: "#DCDCDC"
+    backdropFilter: "blur(20px) brightness(120%)"
 }
 
 
@@ -25,8 +28,9 @@ const Card = (props) => {
     if (! props.children) {
         content = null;
     } else {
-        content = isCardHovered ? props.children.props.text : props.children
+        content = props.text ? (isCardHovered ? props.text : props.children) : props.children
     }
+    /*
     return (
         <div 
             style={isCardHovered ? styleCardHovered : styleCard}
@@ -34,9 +38,21 @@ const Card = (props) => {
             onMouseLeave={() => setCardHovered(false)}
             onClick={props.onClickF ? props.onClickF : null}
         >
+
             {content}
         </div>
     )
+    */
+   return (
+        <AnimatedBorder
+            style={isCardHovered ? styleCardHovered : styleCard}
+            onMouseEnterF={() => setCardHovered(true)}
+            onMouseLeaveF={() => setCardHovered(false)}
+            onClickF={props.onClickF ? props.onClickF : null}
+        >
+           {content}
+        </AnimatedBorder>
+   )
 }
 
 export default Card;

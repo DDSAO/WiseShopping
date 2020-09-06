@@ -3,7 +3,7 @@ import HoverBox from './HoverBox';
 
 import CheckIcon from '@material-ui/icons/Check';
 import { useDispatch } from 'react-redux';
-import { createNewItem } from '../redux';
+import { createNewItemInNew, createNewItemInEdit } from '../redux';
 
 
 const styleFrame = {
@@ -120,6 +120,7 @@ const ItemAdder = (props) => {
     if (props.style) {
         style = props.style
     } 
+    let addItem;
 
     const addEnterListener = e => {
         if (e.key === "Enter") {
@@ -127,8 +128,7 @@ const ItemAdder = (props) => {
                 inputRef.current.placeholder = "Please input an item"
                 alert("Item name cannot be empty :<")
             } else {
-                console.log(currentText)
-                dispatch(createNewItem(currentText))
+                addItem()
                 changeText("")
                 inputRef.current.value = ""
             }
@@ -142,8 +142,12 @@ const ItemAdder = (props) => {
         }
     }
 
+
     useEffect(()=>{
         if (! displayMode) {
+            addItem = props.usedIn === "edit" ? 
+                () => dispatch(createNewItemInEdit(props.wid, currentText)) :
+                () => dispatch(createNewItemInNew(currentText))
             document.addEventListener("keypress" , addEnterListener)
             document.addEventListener("click", detectClickOutside)
             return () =>{
@@ -164,7 +168,7 @@ const ItemAdder = (props) => {
             <EditText
                 style={style.edit}
                 onChangeF={e=>changeText(e.target.value)}
-                onClickF={()=>dispatch(createNewItem(currentText))}
+                onClickF={()=> addItem()}
                 inputRef = {inputRef}
                 enableButton = {currentText.length}
             />

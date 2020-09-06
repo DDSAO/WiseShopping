@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import CheckIcon from '@material-ui/icons/Check';
 import HoverBox from './HoverBox';
+import { useDispatch } from 'react-redux';
+import { toggleItemStatus } from '../redux';
 
 const styleCard = {
     height: "50px",
@@ -36,6 +39,15 @@ const styleIconSelected = {
     ...styleIcon,
     fill: "green",
 }
+const styleTickNotSelected = {
+    ...styleIconNotSelected,
+
+    fontSize: "20px"
+}
+const styleTickSelected = {
+    ...styleTickNotSelected,
+    fill: "black",
+}
 
 const styleItem = {
     display: "flex",
@@ -47,17 +59,21 @@ const styleItem = {
 }
 
 const ViewItemCard = (props) => {
-    const [isCardClicked, setCardClicked] = useState(false);
-
+    const [isCardClicked, setCardClicked] = useState(props.status);
+    const dispatch = useDispatch()
     return (
     <HoverBox
         defaultStyle={styleCard}
         hoveredStyle={styleCardHovered}
-        onClickF={()=>setCardClicked(! isCardClicked)}
+        onClickF={()=>{
+            setCardClicked(! isCardClicked)
+            dispatch(toggleItemStatus(props.wid, props.iid))
+        }}
     >
         <div style={styleIconFrame}>
             <RadioButtonUncheckedIcon style={styleIcon} />
             <FiberManualRecordIcon style={isCardClicked ? styleIconSelected : styleIconNotSelected} />
+            <CheckIcon style={isCardClicked ? styleTickSelected : styleTickNotSelected}/>
         </div>
         <div style={styleItem}>{props.name}</div>
     </HoverBox>

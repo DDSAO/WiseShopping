@@ -3,7 +3,8 @@ import {
     HIDE_MENU,
     TOGGLE_MENU,
     SHOW_NOTIFICATION,
-    HIDE_NOTIFICATION
+    HIDE_NOTIFICATION,
+    JUMP_TO,
 } from "./actionTypes"
 
 export const showMenu = () => ({
@@ -18,7 +19,7 @@ export const toggleMenu = () => ({
     type: TOGGLE_MENU
 })
 
-export const showNotification = (message,onConfirm,onCancel,confirmText="Confirm",cancelText="Cancel") => ({
+export const showNotification = (message, cancelText="Cancel", onCancel,confirmText="Confirm", onConfirm) => ({
     type: SHOW_NOTIFICATION,
     message: message,
     onConfirm: onConfirm,
@@ -30,3 +31,9 @@ export const showNotification = (message,onConfirm,onCancel,confirmText="Confirm
 export const hideNotification = () => ({
     type: HIDE_NOTIFICATION
 })
+
+export const jumpTo = (currentPage) => ({
+    type: JUMP_TO,
+    currentPage: currentPage,
+})
+

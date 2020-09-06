@@ -71,6 +71,11 @@ const EditableTitle = (props) => {
             
         }
     }
+    const detectEnter = (e) => {
+        if (e.key === "Enter") {
+            setDisplaying(true)
+        }
+    }
     useEffect(()=> {
         setText(props.name)
     }, [props.name])
@@ -78,10 +83,12 @@ const EditableTitle = (props) => {
     useEffect(()=> {
         if (! isDisplaying) {
             inputRef.current.focus()
+            document.addEventListener('keypress', detectEnter)
             document.addEventListener('mousedown', detectClickOutside)
         }
         return () => {
             if (! isDisplaying) {
+                document.removeEventListener('keypress', detectEnter)
                 document.removeEventListener('mousedown', detectClickOutside)
             }
         }

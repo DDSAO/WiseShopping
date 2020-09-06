@@ -3,18 +3,22 @@ import HoverBox from './HoverBox';
 import EditableTitle from './EditableTitle';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
-    createNewWishlist, 
-    createNewItemInNew, 
-    deleteItemInNew, 
+    createNewItemInEdit, 
+    deleteItemInEdit, 
     showNotification, 
     hideNotification,
     clearDraft,
     jumpTo
 } from '../redux/';
+
 import ItemAdder from './ItemAdder';
 import ItemCard from './ItemCard';
-import { useHistory } from 'react-router-dom';
+
+import { useHistory, useParams } from 'react-router-dom';
 import { addWishlistFromDraft } from '../redux/';
+import Empty from './Empty';
+import { rerollChangeInEdit } from '../redux/wishlist/wishlistActions';
+
 
 
 const styleFrame = {
@@ -67,56 +71,51 @@ const styleButtonHovered = {
 }
 
 
-const NewWishlist = () => {
-    const dispatch = useDispatch()
-    var wishlist = useSelector(state => state.wishlist.newWishlist)
-    var items = useSelector(state => state.wishlist.newWishlist.items)
+const EditWishlist = () => {
+    let { wid } = useParams()
     const history = useHistory()
+    const wishlist = useSelector(state => state.wishlist.wishlists[wid])
+    const dispatch = useDispatch()
 
-    useEffect(()=>{
-        if (wishlist.id === undefined) {
-            dispatch(createNewWishlist())
-        }
-    }, [])
+    if (wishlist === undefined) {
+        return <Empty message="No wishlist found"/>
+    }
+
 
     const handleCancel = () => {
         dispatch(showNotification(
             (<div>
-                <p>Do you want to save this wishlist as draft?</p>
-                <p>(Next time you create new wishlist, current items will be displayed)</p>
+                <p>Do you want to save the changes you made ?</p>
             </div>)
             ,
             "no",
             //onCancel
             ()=>{
-                dispatch(clearDraft())
+                dispatch(rerollChangeInEdit(wid))
                 dispatch(hideNotification())
-                dispatch(jumpTo('home'))
                 history.push("/")
-
+                dispatch(jumpTo('home'))
             },
             "yes",
             //confirm
             ()=>{
                 dispatch(hideNotification())
-                dispatch(jumpTo('home'))
                 history.push("/")
-            },
-        )) 
+                dispatch(jumpTo('home'))
+            },)) 
     }
-
     return (
         <div style={styleFrame}>
             <EditableTitle name={wishlist.name}/>
-            {items ? Object.entries(items).map(([key, item], index) => {
+            {wishlist.items ? Object.entries(wishlist.items).map(([key, item], index) => {
                 return <ItemCard 
-                    key={key} index={index+1} iid={item.iid}
-                    name={item.name}
+                    key={key} index={index+1} iid={item.iid} wid={wishlist.id}
+                    name={item.name} usedIn="edit"
                     onClickF={()=>{
-                        dispatch(deleteItemInNew(item.iid))}}/>
+                        dispatch(deleteItemInEdit(wishlist.id, item.iid))}}/>
             }) : null
             }
-            <ItemAdder text="+ Add New Item" />
+            <ItemAdder text="+ Add New Item" usedIn="edit" wid={wid}/>
             <div style={styleButtonFrame}>
                 <HoverBox
                     defaultStyle={styleButton}
@@ -129,8 +128,8 @@ const NewWishlist = () => {
                     onClickF={()=>{
                         console.log('saved')
                         dispatch(addWishlistFromDraft())
-                        dispatch(jumpTo('home'))
                         history.push('/')
+                        dispatch(jumpTo('home'))
                     }}
                 >Confirm</HoverBox>
             </div>
@@ -138,4 +137,4 @@ const NewWishlist = () => {
     )
 }
 
-export default NewWishlist
+export default EditWishlist

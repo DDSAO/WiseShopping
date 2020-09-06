@@ -1,16 +1,17 @@
 import React, {useRef} from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import HoverBox from './HoverBox';
+import { hideNotification } from '../redux/interface/interfaceActions';
+import { flexCenter } from '../css/css';
+import AnimatedBorder from './AnimatedBorder';
 
 const style = {
+    ...flexCenter,
     position: "fixed",
     top:"0",
     left: "0",
     background:"rgba(0,0,0,0.3)",
-
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    zIndex: 5,
 }
 const styleNotiBox = {
     borderRadius: "20px",
@@ -41,11 +42,9 @@ const styleButtonFrame= {
     alignItems: "center",
 }
 const styleButton = {
+    ...flexCenter,
     maxWidth: "200px",
     margin:"5% 10px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center", 
     borderRadius: "10px",
     border:"1px solid black",
     userSelect: "none"
@@ -59,13 +58,14 @@ const styleButtonHovered = {
 const Notification = (props) => {
     const notification = useSelector(state => state.interface.notification)
     const notiBox = useRef(null)
+    const dispatch = useDispatch()
     if (! notification.shouldShow) {
         return null
     }
     return (
         <div style={style} onClick={e=>{
             if (! notiBox.current.contains(e.target)) {
-                notification.onCancel()
+                dispatch(hideNotification())
             }
         }}>
             <div ref={notiBox} style={styleNotiBox}>
@@ -73,16 +73,17 @@ const Notification = (props) => {
                     {notification.message}
                 </div>
                 <div style={styleButtonFrame}>  
-                    <HoverBox
+                    <AnimatedBorder
                         defaultStyle={styleButton}
                         hoveredStyle={styleButtonHovered}
                         onClickF={notification.onCancel}
-                    >{notification.cancelText}</HoverBox>
-                    <HoverBox
+                        borderColor="tomato"
+                    >{notification.cancelText}</AnimatedBorder>
+                    <AnimatedBorder
                         defaultStyle={styleButton}
                         hoveredStyle={styleButtonHovered}
                         onClickF={notification.onConfirm}
-                    >{notification.confirmText}</HoverBox>
+                    >{notification.confirmText}</AnimatedBorder>
                 </div>
             </div>
         </div>

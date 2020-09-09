@@ -7,18 +7,29 @@ import Empty from './Empty';
 import HoverBox from './HoverBox';
 import { jumpTo } from '../redux';
 
+import Background from '../asset/background.jpg'
 
+//css
+import { styleButton, styleButtonCancel, styleButtonConfirm } from '../css/css';
 
+const styleBackground = {
+    background: `url(${Background})`,
+    backgroundSize: "cover",    
+    backgroundPosition: "center",
+}
 
 const styleFrame = {
     margin: "auto",
-    paddingTop:"5%",
-    height:"100%",
+    position: "relative",
+    top:"5%",
+    height:"95%",
     width: "80%",
     borderLeft:"1px solid black",
     borderRight:"1px solid black",
     display:"flex",
     flexDirection: "column",
+    backdropFilter: "blur(50px) brightness(120%)",
+    
 }
 
 const styleTitleFrame = {
@@ -61,17 +72,7 @@ const styleButtonFrame= {
     justifyContent: "space-between",
     alignItems: "center",
 }
-const styleButton = {
-    width: "200px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    border:"1px solid black"
-}
-const styleButtonHovered = {
-    ...styleButton,
-    background: "#DCDCDC",
-}
+
 
 const ViewWishlist = (props) => {
     let { wid } = useParams()
@@ -87,7 +88,8 @@ const ViewWishlist = (props) => {
     let displayDate =date.getDate( ) + '/' + (date.getMonth( ) + 1)+'/'+ date.getFullYear( );
     
     return (
-    <div style={styleFrame}>
+    <div style={styleBackground}>
+        <div style={styleFrame}>
         <div style={styleTitleFrame}>
             <div style={styleTitle}>{wishlist.name}</div>
             <div style={styleDate}>Created at {displayDate}</div>
@@ -101,18 +103,18 @@ const ViewWishlist = (props) => {
         <div style={styleButtonFrame}>
             <HoverBox
                 defaultStyle={styleButton}
-                hoveredStyle={styleButtonHovered}
+                hoveredStyle={styleButtonCancel}
                 onClickF={()=>{
                     dispatch(jumpTo('home'))
                     history.push('/')}}
             >Back</HoverBox>
             <HoverBox
                 defaultStyle={styleButton}
-                hoveredStyle={styleButtonHovered}
+                hoveredStyle={styleButtonConfirm}
             >Finish</HoverBox>
         </div>
-    </div>
-   )
+        </div>
+    </div>)
 }
 
 export default ViewWishlist

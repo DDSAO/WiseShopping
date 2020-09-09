@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import HoverBox from './HoverBox';
 import { hideNotification } from '../redux/interface/interfaceActions';
 import { flexCenter } from '../css/css';
-import AnimatedBorder from './AnimatedBorder';
+
+import Background from '../asset/background.jpg'
 
 const style = {
     ...flexCenter,
@@ -18,14 +19,16 @@ const styleNotiBox = {
     minWidth: "350px",
     width: "40%",
     height: "20%",
-    border: "1px solid black",
-    background: "white",
+    border: "2px",
+    background: `url(${Background})`,
+    backgroundSize: "cover",
+    
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
 }
-const styleMessage = {
+const styleMessageFrame = {
     padding: "20px",
     height:"70%",
     textAlign:"center",
@@ -33,6 +36,12 @@ const styleMessage = {
     alignItems: "center",
     justifyContent: "center",
 }
+const styleMessage = {
+    borderRadius: styleNotiBox.borderRadius,
+    padding: "0 30px",
+    backdropFilter: "blur(5px)"
+}
+
 const styleButtonFrame= {
     padding: "10px 0",
     height: "60px",
@@ -47,11 +56,13 @@ const styleButton = {
     margin:"5% 10px",
     borderRadius: "10px",
     border:"1px solid black",
-    userSelect: "none"
+    userSelect: "none",
+    backdropFilter: "blur(20px)",
 }
 const styleButtonHovered = {
     ...styleButton,
-    background: "#DCDCDC",
+    backdropFilter: "blur(20px) brightness(130%)",
+    color:"black"
 }
 
 
@@ -69,21 +80,20 @@ const Notification = (props) => {
             }
         }}>
             <div ref={notiBox} style={styleNotiBox}>
-                <div style={styleMessage}>
-                    {notification.message}
+                <div style={styleMessageFrame}>
+                    <p style={styleMessage}>{notification.message}</p>
                 </div>
                 <div style={styleButtonFrame}>  
-                    <AnimatedBorder
+                    <HoverBox
                         defaultStyle={styleButton}
                         hoveredStyle={styleButtonHovered}
                         onClickF={notification.onCancel}
-                        borderColor="tomato"
-                    >{notification.cancelText}</AnimatedBorder>
-                    <AnimatedBorder
+                    >{notification.cancelText}</HoverBox>
+                    <HoverBox
                         defaultStyle={styleButton}
                         hoveredStyle={styleButtonHovered}
                         onClickF={notification.onConfirm}
-                    >{notification.confirmText}</AnimatedBorder>
+                    >{notification.confirmText}</HoverBox>
                 </div>
             </div>
         </div>

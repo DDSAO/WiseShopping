@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { saveDraftTitle } from '../redux'
-
+import { LIGHT_BLUE } from '../css/colors';
 
 const style = {
     width: "fit-content",
@@ -26,7 +26,7 @@ const styleTextBox = {
 }
 const styleTextBoxHovered = {
     ...styleTextBox,
-    background: "#DCDCDC",
+    background: LIGHT_BLUE,
 }
 const styleText = {
     fontSize:"1em",
@@ -68,7 +68,6 @@ const EditableTitle = (props) => {
     const detectClickOutside = (e)=> {
         if (! inputRef.current.contains(e.target)) {
             setDisplaying(true)
-            
         }
     }
     const detectEnter = (e) => {
@@ -92,7 +91,7 @@ const EditableTitle = (props) => {
                 document.removeEventListener('mousedown', detectClickOutside)
             }
         }
-    },[isDisplaying])
+    }, [isDisplaying])
 
     return (
         <div

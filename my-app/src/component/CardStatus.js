@@ -64,7 +64,7 @@ const CardStatus = (props) => {
 
     const confirmDelete = () => {
         dispatch(showNotification(
-            (<div>Are you sure to delete {"<<"+props.name+">>"} ?</div>)
+            (<p>Are you sure to delete {"<<"+props.name+">>"} ?</p>)
         ,
         "No",
         ()=>dispatch(hideNotification()),

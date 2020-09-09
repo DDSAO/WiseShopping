@@ -1,7 +1,7 @@
 import React from 'react';
 import WishlistContainer from './WishlistContainer';
 import MessageList from './MessageList';
-import Background from '../asset/desert.jpg';
+import Background from '../asset/background.jpg';
 
 const style = {
     paddingTop: "5%",

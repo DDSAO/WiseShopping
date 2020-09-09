@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import HoverBox from './HoverBox';
 import EditableTitle from './EditableTitle';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,18 +19,27 @@ import { addWishlistFromDraft } from '../redux/';
 import Empty from './Empty';
 import { rerollChangeInEdit } from '../redux/wishlist/wishlistActions';
 
+import Background from '../asset/background.jpg'
+import { styleButton, styleButtonConfirm, styleButtonCancel } from '../css/css';
+import VirtualItemCard from './VirtualItemCard';
 
+const styleBackground = {
+    background: `url(${Background})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+}
 
 const styleFrame = {
     margin: "auto",
+    position:"relative",
+    top:"5%", 
     height:"95%",
     width: "80%",
-    borderLeft:"1px solid black",
-    borderRight:"1px solid black",
     display:"flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-start",
+    backdropFilter: "blur(50px) brightness(120%)",
 }
 
 const styleAddNew = {
@@ -58,17 +67,6 @@ const styleButtonFrame= {
     justifyContent: "space-between",
     alignItems: "center",
 }
-const styleButton = {
-    width: "200px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    border:"1px solid black"
-}
-const styleButtonHovered = {
-    ...styleButton,
-    background: "#DCDCDC",
-}
 
 
 const EditWishlist = () => {
@@ -76,6 +74,9 @@ const EditWishlist = () => {
     const history = useHistory()
     const wishlist = useSelector(state => state.wishlist.wishlists[wid])
     const dispatch = useDispatch()
+
+    const [isAddingHovered, setAddingHovered] = useState(false)
+    const [currentAddingText, setAddingText] = useState(false)
 
     if (wishlist === undefined) {
         return <Empty message="No wishlist found"/>
@@ -105,33 +106,42 @@ const EditWishlist = () => {
             },)) 
     }
     return (
-        <div style={styleFrame}>
-            <EditableTitle name={wishlist.name}/>
-            {wishlist.items ? Object.entries(wishlist.items).map(([key, item], index) => {
-                return <ItemCard 
-                    key={key} index={index+1} iid={item.iid} wid={wishlist.id}
-                    name={item.name} usedIn="edit"
-                    onClickF={()=>{
-                        dispatch(deleteItemInEdit(wishlist.id, item.iid))}}/>
-            }) : null
-            }
-            <ItemAdder text="+ Add New Item" usedIn="edit" wid={wid}/>
-            <div style={styleButtonFrame}>
-                <HoverBox
-                    defaultStyle={styleButton}
-                    hoveredStyle={styleButtonHovered}
-                    onClickF={()=>handleCancel()}
-                >Cancel</HoverBox>
-                <HoverBox
-                    defaultStyle={styleButton}
-                    hoveredStyle={styleButtonHovered}
-                    onClickF={()=>{
-                        console.log('saved')
-                        dispatch(addWishlistFromDraft())
-                        history.push('/')
-                        dispatch(jumpTo('home'))
-                    }}
-                >Confirm</HoverBox>
+        <div style={styleBackground}>
+            <div style={styleFrame}>
+                <EditableTitle name={wishlist.name}/>
+                {wishlist.items ? Object.entries(wishlist.items).map(([key, item], index) => {
+                    return <ItemCard 
+                        key={key} index={index+1} iid={item.iid} wid={wishlist.id}
+                        name={item.name} usedIn="edit"
+                        onClickF={()=>{
+                            dispatch(deleteItemInEdit(wishlist.id, item.iid))}}/>
+                }) : null
+                }
+                <VirtualItemCard text={currentAddingText}/>
+                {
+                    //isAddingHovered ? <VirtualItemCard /> : null
+                }
+                <ItemAdder 
+                    text="+ Add New Item" usedIn="edit" wid={wid}
+                    setHovered = {setAddingHovered}
+                    setText = {setAddingText}
+                />
+                <div style={styleButtonFrame}>
+                    <HoverBox
+                        defaultStyle={styleButton}
+                        hoveredStyle={styleButtonCancel}
+                        onClickF={()=>handleCancel()}
+                    >Cancel</HoverBox>
+                    <HoverBox
+                        defaultStyle={styleButton}
+                        hoveredStyle={styleButtonConfirm}
+                        onClickF={()=>{
+                            dispatch(addWishlistFromDraft())
+                            history.push('/')
+                            dispatch(jumpTo('home'))
+                        }}
+                    >Confirm</HoverBox>
+                </div>
             </div>
         </div>
     )

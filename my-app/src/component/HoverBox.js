@@ -2,17 +2,6 @@ import React, { useState, useEffect } from 'react';
 
 const HoverBox = (props) => {
     const [isHovered, setHovered] = useState(false)
-    /*
-    useEffect(()=> {
-        console.log('hoverbox hovered')
-        if (props.onMouseEnterF && isHovered) {
-            props.onMouseEnterF()
-        }
-        if (props.onMouseLeaveF && ! isHovered) {
-            props.onMouseLeaveF()
-        }
-    }, [isHovered])
-    */
     const mouseEnter = props.onMouseEnterF ? props.onMouseEnterF : () => null
     const mouseLeave =  props.onMouseLeaveF ? props.onMouseLeaveF : () => null
 

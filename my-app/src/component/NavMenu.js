@@ -81,7 +81,6 @@ const NavMenu = () => {
     const sideRef = useRef(null)
 
     useEffect(()=>{
-        console.log(menuRef.current)
         t1.current = new TimelineLite({paused:true})
             .fromTo(menuRef.current, 1, {css:{left:"-300px"}}, {css:{left:"0"}, ease:"Power4.eastOut"})
             .fromTo(sideRef.current, 1, {css:{left:0}}, {css:{left:"300px"}, ease:"Power4.eastOut"}, "-=1")

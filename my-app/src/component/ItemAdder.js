@@ -4,6 +4,7 @@ import HoverBox from './HoverBox';
 import CheckIcon from '@material-ui/icons/Check';
 import { useDispatch } from 'react-redux';
 import { createNewItemInNew, createNewItemInEdit } from '../redux';
+import { JADE_GREEN } from '../css/colors';
 
 
 const styleFrame = {
@@ -20,7 +21,8 @@ const styleFrame = {
 }
 const styleHovered = {
     ...styleFrame,
-    background: "#DCDCDC"
+    background: JADE_GREEN,
+    
 }
 const styleText = {
     borderRadius: "15px",
@@ -56,7 +58,7 @@ const styleButton = {
 }
 const styleButtonHovered = {
     ...styleButton,
-    background: "#DCDCDC"
+    background: JADE_GREEN
 }
 const styleIconDisabled = {
     fill: "grey",
@@ -79,12 +81,13 @@ const defaultStyle= {
     }
 }
 const Text = (props) => {
-
     return (
         <HoverBox 
             defaultStyle={props.style.default}
             hoveredStyle={props.style.hovered}
             onClickF={props.onClickF}
+            onMouseEnterF = {() => props.setHovered(true)}
+            onMouseLeaveF = {() => props.setHovered(false)}
         >
             <p style={props.style.text}>{props.text}</p>
         </HoverBox>
@@ -124,30 +127,32 @@ const ItemAdder = (props) => {
 
     const addEnterListener = e => {
         if (e.key === "Enter") {
-            if (inputRef.current.value === "") {
-                inputRef.current.placeholder = "Please input an item"
-                alert("Item name cannot be empty :<")
-            } else {
-                addItem()
-                changeText("")
-                inputRef.current.value = ""
-            }
-            
+            addItem()    
         } 
     }
 
     const detectClickOutside = (e)=> {
         if (! inputRef.current.contains(e.target)) {
+            changeText("")
             changeMode(1)
         }
     }
-
-
+    //usedIn determines which reducer to call
+    //draft for draft wishlist, edit for change existed wishlist
     useEffect(()=>{
         if (! displayMode) {
-            addItem = props.usedIn === "edit" ? 
-                () => dispatch(createNewItemInEdit(props.wid, currentText)) :
-                () => dispatch(createNewItemInNew(currentText))
+            addItem = () => {
+                if (inputRef.current.value === "") {
+                    inputRef.current.placeholder = "Please input an item"
+                    alert("Item name cannot be empty :<")
+                } else {
+                    changeText("")
+                    inputRef.current.value = ""
+                    props.usedIn === "edit" ? 
+                        dispatch(createNewItemInEdit(props.wid, currentText)) :
+                        dispatch(createNewItemInNew(currentText))
+                }
+            }
             document.addEventListener("keypress" , addEnterListener)
             document.addEventListener("click", detectClickOutside)
             return () =>{
@@ -161,13 +166,17 @@ const ItemAdder = (props) => {
         <div style={{height:"fit-content",marginTop:"auto"}}>
             {displayMode ? 
             <Text 
+                {...props}
                 style={style.display}
                 text={"+ Add New Item"}
                 onClickF={()=>changeMode(1-displayMode)}
             /> :
             <EditText
                 style={style.edit}
-                onChangeF={e=>changeText(e.target.value)}
+                onChangeF={e=> {
+                    changeText(e.target.value)
+                    props.setText(e.target.value)
+                }}
                 onClickF={()=> addItem()}
                 inputRef = {inputRef}
                 enableButton = {currentText.length}

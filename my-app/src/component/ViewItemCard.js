@@ -12,6 +12,7 @@ const styleCard = {
     padding:"0 8%",
     borderBottom: "1px solid black",
     display:"flex",
+    background: "inherit",
 }
 const styleCardHovered = {
     ...styleCard,

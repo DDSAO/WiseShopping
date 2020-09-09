@@ -22,6 +22,7 @@ const style = {
     display: "flex",
     borderBottom: "1px solid black",
     backdropFilter: "blur(20px) saturate(80%)",
+    zIndex: 10,
 }
 const styleLeft = {
     display: "flex",

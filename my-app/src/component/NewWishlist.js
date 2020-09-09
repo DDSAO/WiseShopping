@@ -11,40 +11,51 @@ import {
     clearDraft,
     jumpTo
 } from '../redux/';
+
 import ItemAdder from './ItemAdder';
 import ItemCard from './ItemCard';
 import { useHistory } from 'react-router-dom';
 import { addWishlistFromDraft } from '../redux/';
 
+import { 
+
+    styleButton, 
+    styleButtonCancel, 
+    styleButtonConfirm
+ } from '../css/css';
+
+import Background from '../asset/background.jpg'
+
+
+
+const styleBackground = {
+    background: `url(${Background})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+}
 
 const styleFrame = {
     margin: "auto",
+    position:"relative",
+    top:"5%",
     height:"95%",
     width: "80%",
-    borderLeft:"1px solid black",
-    borderRight:"1px solid black",
+    //borderLeft:"1px solid black",
+    //borderRight:"1px solid black",
     display:"flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-start",
+    backdropFilter: "blur(50px) brightness(120%)",
 }
-
-const styleAddNew = {
-    border: "1px solid black",
-    borderRadius: "10px",
-    width:"60%",
-    height:"50px",
-    marginTop: "auto",
-    display: "flex",
-    justifyContent: "center",
+const styleItemBox = {
+    display:"flex",
+    flexDirection: "column",
     alignItems: "center",
-    userSelect: "none",
+    justifyContent: "flex-start",
+    overflow:"scroll",
 }
 
-const styleAddNewHovered = {
-    ...styleAddNew,
-    background: "#DCDCDC"
-}
 
 const styleButtonFrame= {
     padding: "20px 8%",
@@ -53,17 +64,12 @@ const styleButtonFrame= {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    
 }
-const styleButton = {
-    width: "200px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    border:"1px solid black"
-}
+
 const styleButtonHovered = {
     ...styleButton,
-    background: "#DCDCDC",
+    background:"rgba(255,255,255,0.5)",
 }
 
 
@@ -106,34 +112,40 @@ const NewWishlist = () => {
     }
 
     return (
-        <div style={styleFrame}>
-            <EditableTitle name={wishlist.name}/>
-            {items ? Object.entries(items).map(([key, item], index) => {
-                return <ItemCard 
-                    key={key} index={index+1} iid={item.iid}
-                    name={item.name}
-                    onClickF={()=>{
-                        dispatch(deleteItemInNew(item.iid))}}/>
-            }) : null
-            }
-            <ItemAdder text="+ Add New Item" />
-            <div style={styleButtonFrame}>
-                <HoverBox
-                    defaultStyle={styleButton}
-                    hoveredStyle={styleButtonHovered}
-                    onClickF={()=>handleCancel()}
-                >Cancel</HoverBox>
-                <HoverBox
-                    defaultStyle={styleButton}
-                    hoveredStyle={styleButtonHovered}
-                    onClickF={()=>{
-                        console.log('saved')
-                        dispatch(addWishlistFromDraft())
-                        dispatch(jumpTo('home'))
-                        history.push('/')
-                    }}
-                >Confirm</HoverBox>
+        <div style={styleBackground}>
+            <div style={styleFrame}>
+                <EditableTitle name={wishlist.name}/>
+                <div style={styleItemBox}>
+                    {items ? Object.entries(items).map(([key, item], index) => {
+                            return <ItemCard 
+                                key={key} index={index+1} iid={item.iid}
+                                name={item.name}
+                                onClickF={()=>{
+                                    dispatch(deleteItemInNew(item.iid))}}/>
+                    }) : null
+                    }
+                </div>
+                    
+                <ItemAdder text="+ Add New Item" />
+                <div style={styleButtonFrame}>
+                    <HoverBox
+                        defaultStyle={styleButton}
+                        hoveredStyle={styleButtonCancel}
+                        onClickF={()=>handleCancel()}
+                    >Cancel</HoverBox>
+                    <HoverBox
+                        defaultStyle={styleButton}
+                        hoveredStyle={styleButtonConfirm}
+                        onClickF={()=>{
+                            console.log('saved')
+                            dispatch(addWishlistFromDraft())
+                            dispatch(jumpTo('home'))
+                            history.push('/')
+                        }}
+                    >Confirm</HoverBox>
+                </div>
             </div>
+            
         </div>
     )
 }

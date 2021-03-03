@@ -1,31 +1,30 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import HoverBox from './HoverBox';
 import EditableTitle from './EditableTitle';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
     createNewWishlist, 
-    createNewItemInNew, 
     deleteItemInNew, 
     showNotification, 
     hideNotification,
     clearDraft,
-    jumpTo
+    jumpTo,
+    addWishlist,
 } from '../redux/';
 
 import ItemAdder from './ItemAdder';
 import ItemCard from './ItemCard';
 import { useHistory } from 'react-router-dom';
-import { addWishlistFromDraft } from '../redux/';
+
 
 import { 
-
     styleButton, 
     styleButtonCancel, 
     styleButtonConfirm
  } from '../css/css';
 
 import Background from '../asset/background.jpg'
-
+import VirtualItemCard from './VirtualItemCard';
 
 
 const styleBackground = {
@@ -74,23 +73,30 @@ const styleButtonHovered = {
 
 
 const NewWishlist = () => {
-    const dispatch = useDispatch()
-    var wishlist = useSelector(state => state.wishlist.newWishlist)
-    var items = useSelector(state => state.wishlist.newWishlist.items)
+    const wishlist = useSelector(state => state.wishlist.newWishlist)
+    const user = useSelector(state=> state.interface.user)
     const history = useHistory()
+    const dispatch = useDispatch()
+
+    const [isAddingHovered, setAddingHovered] = useState(false)
+    const [currentAddingText, setAddingText] = useState(false)
+
+    const itemBoxRef = useRef(null)
 
     useEffect(()=>{
-        if (wishlist.id === undefined) {
-            dispatch(createNewWishlist())
-        }
-    }, [])
+            if (wishlist.id === undefined) {
+                dispatch(createNewWishlist())
+            }
+        }, [])
+
+    //scroll down pages when inserted or deleted
+    useEffect(()=> {
+        itemBoxRef.current.scrollTop = itemBoxRef.current.scrollHeight
+    }, [wishlist.items])
 
     const handleCancel = () => {
         dispatch(showNotification(
-            (<div>
-                <p>Do you want to save this wishlist as draft?</p>
-                <p>(Next time you create new wishlist, current items will be displayed)</p>
-            </div>)
+            ("Do you want to save this wishlist as draft?")
             ,
             "no",
             //onCancel
@@ -99,7 +105,6 @@ const NewWishlist = () => {
                 dispatch(hideNotification())
                 dispatch(jumpTo('home'))
                 history.push("/")
-
             },
             "yes",
             //confirm
@@ -115,18 +120,29 @@ const NewWishlist = () => {
         <div style={styleBackground}>
             <div style={styleFrame}>
                 <EditableTitle name={wishlist.name}/>
-                <div style={styleItemBox}>
-                    {items ? Object.entries(items).map(([key, item], index) => {
-                            return <ItemCard 
-                                key={key} index={index+1} iid={item.iid}
-                                name={item.name}
-                                onClickF={()=>{
-                                    dispatch(deleteItemInNew(item.iid))}}/>
+                <div ref={itemBoxRef} style={styleItemBox}>
+                    {wishlist.items ? Object.entries(wishlist.items).map(([key, item], index) => {
+                        return <ItemCard 
+                            key={key} index={index+1} iid={item.iid} wid={wishlist.id}
+                            name={item.name} 
+                            onClickF={()=>{
+                                dispatch(deleteItemInNew(item.iid))}}/>
                     }) : null
                     }
+
+                    {isAddingHovered ? 
+                        <VirtualItemCard 
+                            text={currentAddingText} 
+                            index={Object.keys(wishlist.items).length + 1}/>
+                        : null}
                 </div>
+                <ItemAdder 
+                    text="+ Add New Item" 
+                    setHovered = {setAddingHovered}
+                    setText = {setAddingText}
+                />
                     
-                <ItemAdder text="+ Add New Item" />
+                
                 <div style={styleButtonFrame}>
                     <HoverBox
                         defaultStyle={styleButton}
@@ -137,8 +153,7 @@ const NewWishlist = () => {
                         defaultStyle={styleButton}
                         hoveredStyle={styleButtonConfirm}
                         onClickF={()=>{
-                            console.log('saved')
-                            dispatch(addWishlistFromDraft())
+                            dispatch(addWishlist(user.id, wishlist))
                             dispatch(jumpTo('home'))
                             history.push('/')
                         }}

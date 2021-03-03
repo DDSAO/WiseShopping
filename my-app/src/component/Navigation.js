@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toggleMenu } from '../redux/interface/interfaceActions';
 
 import MenuIcon from '@material-ui/icons/Menu';
@@ -73,7 +73,7 @@ const RightContainer = (prop) => {
         <HoverBox
             defaultStyle={styleIcon}
             hoveredStyle={styleIconHovered}
-            onClickF={() => alert('user')}
+            onClickF={() => alert('the user profile page is under development')}
         >
             <AccountCircleIcon/>
         </HoverBox>
@@ -84,12 +84,12 @@ const RightContainer = (prop) => {
 const Navigation = () => {
 
     const dispatch = useDispatch()
-    //useEffect(() => {dispatch(addExample())}, [])
+    const user = useSelector(state=>state.interface.user)
 
     return ( 
         <div style={style}>
             <LeftContainer />
-            <RightContainer name={data.name}/>
+            <RightContainer name={user.name}/>
         </div>
     );
 }

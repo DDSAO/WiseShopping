@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { removeWishlist, showNotification, hideNotification, jumpTo } from '../redux'
 
 //icons
@@ -61,17 +61,18 @@ const styleIcon = {
 const CardStatus = (props) => {
     const history = useHistory()
     const dispatch = useDispatch()
+    const user = useSelector(state=> state.interface.user)
 
     const confirmDelete = () => {
         dispatch(showNotification(
-            (<p>Are you sure to delete {"<<"+props.name+">>"} ?</p>)
-        ,
-        "No",
-        ()=>dispatch(hideNotification()),
-        "Sure",
-        ()=>{
-            dispatch(removeWishlist(props.wid))
-            dispatch(hideNotification())
+            ("Are you sure to delete << " + props.name+" >> ?")
+            ,
+            "No",
+            ()=>dispatch(hideNotification()),
+            "Sure",
+            ()=>{
+                dispatch(hideNotification())
+                dispatch(removeWishlist(user.id, props.wid))
         }))
     }
     return (

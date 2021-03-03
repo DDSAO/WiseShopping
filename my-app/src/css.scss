@@ -1,0 +1,229 @@
+
+//colors
+//https://rgbcolorcode.com/
+$LIGHT_BLUE : rgba(30, 139, 195, 0.3);
+$DEEP_BLUE : rgba(44, 130, 201, 0.5);
+
+$LIGHT_RED : rgba(207, 0, 15, 0.3);
+
+$JADE_GREEN : rgba(0, 177, 106, 0.5);
+
+$CONFIRM_GREEN : rgb(12, 138, 87);
+
+$LIGHT_YELLOW: rgba(255,231,13,0.3);
+
+$LOADING_YELLOW : rgb(129, 101, 25);
+
+
+:export { 
+    LIGHT_BLUE : $LIGHT_BLUE;
+    DEEP_BLUE : $DEEP_BLUE;
+    LOADING_YELLOW : $LOADING_YELLOW;
+    CONFIRM_GREEN : $CONFIRM_GREEN
+}
+
+.bgRed {
+    background: $LIGHT_RED;
+}
+
+.bgGreen {
+    background: $JADE_GREEN;
+}
+
+.bgLightBlue {
+    background: $LIGHT_BLUE;
+}
+
+.bgDeepBlue {
+    background: $DEEP_BLUE;
+}
+
+$YELLOW : rgb(255, 245, 158);
+$GREEN : rgb(174, 255, 223);
+$RED : rgb(255, 128, 136);
+$BLUE : rgb(140, 232, 255);
+
+.bgLightYellow {
+    background: $LIGHT_YELLOW
+}
+.bgSolidBlue {
+    background: $BLUE;
+}
+.bgSolidYellow {
+    background: $YELLOW;
+}
+.bgSolidGreen {
+    background: $GREEN;
+}
+.bgSolidRed{
+    background: $RED;
+}
+.bgGradientYellow {
+    background: linear-gradient(148deg, $YELLOW 0%, rgba(255,255,255,1) 100%)
+}
+.bgGradientGreen{
+    background: linear-gradient(148deg, $GREEN 0%, rgba(255,255,255,1) 100%)
+}
+.bgGradientRed {
+    background: linear-gradient(148deg, $RED 0%, rgba(255,255,255,1) 100%)
+}
+.bgGradientBlue {
+    background: linear-gradient(148deg, $BLUE 0%, rgba(255,255,255,1) 100%)
+}
+
+.halfTransparent {
+    opacity: 0.5;
+}
+
+.logo {
+    animation-name: upDown;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes upDown{
+    0% {top:-20px}
+    50% {top: -40px}
+    100% {top:-20px}
+}
+
+.loadingIcon {
+    fill: $LIGHT_YELLOW;
+    animation-name: rotation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes rotation {
+    from {transform: rotate(0deg)}
+    to {transform: rotate(-360deg)}
+}
+
+.welcomeWords {
+    color: #fff;
+    font-family: impact, arial;
+    text-shadow: 1px 1px 1px rgba(black, 0.6);
+    font-size: 5em;
+    text-align: center;
+    text-decoration: none;
+}
+
+.aButton {
+    width: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    user-select: none;
+
+    &Confirm {
+        @extend .aButton;
+        &:hover{
+            background: $JADE_GREEN;
+        }
+      
+    }
+    &Cancel{
+        @extend .aButton;
+        &:hover{
+            background: $LIGHT_RED;
+        }
+    }
+}
+@keyframes submittingWord {
+    0% {color: #946a26}
+    25% {color: #06943c}
+    50% {color: #9727F5}
+    75% {color: #6C23A8}
+    100% {color: #946a26}
+}
+@keyframes jump{
+    0% {transform: scale(1); background:#9727F5}
+    10% {transform: scale(0.5); background: #6C23A8}
+    20% {transform: scale(1); background:#9727F5}
+    
+    100% {transform: scale(1)}
+    
+}
+$rate : 0.5;
+.submitRegister {
+      
+    & h1 {
+        position: absolute;
+        bottom: 100px;
+        animation-name: submittingWord;
+        animation-timing-function: linear;
+        animation-duration: 20s;
+        animation-iteration-count: infinite;
+    }
+    & .ballBox {
+        height: 50px;
+        position: absolute;
+        bottom: 50px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        & [class^="ball"]{
+            margin: 0 20px;
+            width: 1em;
+            height:1em;
+            border-radius: 30px;
+            position: relative;
+            background: #9727F5;
+            animation: jump 2.5s linear infinite;
+            
+        };
+        & .ball{
+            &2{
+                animation-delay: 0.5s;
+            }
+            &3{
+                animation-delay: 1s;
+            }
+            &4{
+                animation-delay: 1.5s;
+            }
+            &5{
+                animation-delay: 2s;
+            }
+            
+        }
+    }
+}
+.ring {
+    position: absolute;
+    width: inherit;
+    animation-name: rotation;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    &Big {
+        @extend .ring;
+        animation-duration: 4s;
+        animation-direction: reverse;
+    };
+
+    &Small {
+        @extend .ring;
+        animation-duration: 6s;
+        animation-timing-function: linear;
+    };
+}
+@keyframes slidingBackground {
+    0% {
+        background-position: 0% 0%,
+    }
+    100% {
+        background-position: 100% 100%,
+    }
+}
+.LoadingBg {
+    background: linear-gradient(144deg, rgba(208,249,0,1) 0%, rgba(255,212,59,1) 48%, rgba(208,249,0,1) 100%);
+    background-size: 100% 1000%;
+    animation: slidingBackground;
+    animation-iteration-count: infinite;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+}

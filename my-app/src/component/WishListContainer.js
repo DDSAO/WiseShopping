@@ -1,7 +1,7 @@
 import React, { useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from "react-router-dom";
-import { addExample, createNewWishlist, jumpTo } from "../redux"
+import { jumpTo, fetchWishlists } from "../redux"
 
 import WishlistCard from "./WishlistCard"
 import Card from './Card';
@@ -9,6 +9,7 @@ import Card from './Card';
 //icon
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import HistoryIcon from '@material-ui/icons/History';
+
 
 const style = {
     width: "70%",
@@ -32,19 +33,25 @@ const WishlistContainer = () => {
     const dispatch = useDispatch()
     const wishlists = useSelector(state => state.wishlist.wishlists)
     const draft = useSelector(state => state.wishlist.newWishlist)
+    const user = useSelector(state => state.interface.user)
+
+    useEffect(()=> {
+        dispatch(fetchWishlists(user.uid))
+    }, [])
     
+
     return (  
         <div style={style}>
-            {! Object.keys(wishlists).length ? "" : 
+            {! Object.keys(wishlists).length ? null : 
                 Object.values(wishlists).map((item, index) => 
                     <WishlistCard 
-                        key={item.id} 
-                        wid={item.id} 
+                        key={item.wid} 
+                        wid={item.wid} 
                         data={item}
                         name={item.name}
                         onClickF={()=>{
                             dispatch(jumpTo('viewWishlist'))
-                            history.push('/viewWishlist/'+item.id)}}
+                            history.push('/viewWishlist/'+item.wid)}}
                     />
                 )}
             <Card 

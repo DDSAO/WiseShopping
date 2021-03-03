@@ -1,81 +1,48 @@
 import { 
-    ADD_WISHLIST,
+
+    ADD_WISHLISTS,
     EXAMPLE_WISHLIST,
     REMOVE_WISHLIST,
-    SELECT_ITEM,
-    UNSELECT_ITEM,
+
     TOGGLE_ITEM,
+
     CREATE_NEW_WISHLIST,
     CLEAR_DRAFT,
     CREATE_NEW_ITEM_IN_NEW,
     CHANGE_ITEM_NAME_IN_DRAFT,
     DELETE_ITEM_IN_NEW,
-    ADD_WISHLIST_FROM_DRAFT,
+
     SAVE_DRAFT_TITLE,
+
     DELETE_ITEM_IN_EDIT,
     CREATE_NEW_ITEM_IN_EDIT,
     CHANGE_ITEM_NAME_IN_EDIT,
     REROLL_CHANGE_IN_EDIT,
 
+
     TOGGLE_ITEM_STATUS,
+
+    ADD_PAST_WISHLISTS,
 } from "./actionTypes"
 
 
 const initState = {
     currentWid: 2,
-    wishlists: {0:
-        {items: {
-            0:{name: "Egg", Category: "egg", status: 0, iid:0},
-            1:{name: "Beef", Category: "beef", status: 1, iid:1},
-            2:{name: "chicken", Category: "chicken", status: 0, iid:2},
-            3:{name: "Lamb", Category: "lamb", status: 0, iid:3},
-            4:{name: "chicken", Category: "chicken", status: 0, iid:4},
-            5:{name: "Lamb", Category: "lamb", status: 0, iid:5},
-            6:{name: "chicken", Category: "chicken", status: 0, iid:6},
-            7:{name: "Lamb", Category: "lamb", status: 0, iid:7},
-        },
-        currentIid: 8,
-        name: "A wishlist",
-        id : 0,
-        status : 0,
-        location : "1/16 Some Rd, Somewhere, QLD 9999",
-        createdDate : Date.now(),
-        updatedDate : Date.now()
-        }
-    },
+    wishlists: {},
     newWishlist : {},
-    pastWishlists : 
-        {1:
-            {items: {
-                0:{name: "Egg", Category: "egg", status: 0, iid:0},
-                1:{name: "Beef", Category: "beef", status: 1, iid:1},
-                2:{name: "chicken", Category: "chicken", status: 0, iid:2},
-                3:{name: "Lamb", Category: "lamb", status: 0, iid:3},
-                4:{name: "chicken", Category: "chicken", status: 0, iid:4},
-                5:{name: "Lamb", Category: "lamb", status: 0, iid:5},
-                6:{name: "chicken", Category: "chicken", status: 0, iid:6},
-                7:{name: "Lamb", Category: "lamb", status: 0, iid:7},
-            },
-            currentIid: 8,
-            name: "A past wishlist",
-            id : 1,
-            status : 1,
-            location : "1/16 Some Rd, Somewhere, QLD 9999",
-            createdDate : Date.now(),
-            updatedDate : Date.now()
-            }
-        }
+    pastWishlists : {}
     
 }
 
-const addWishlist = (state, action) => {
-    const newWid = state.currentWid + 1
+const addWishlists = (state, action) => {
+    let wishlists = {}
+    action.wishlists.map(wishlist => {
+        wishlists[wishlist.wid] = wishlist
+    })
     return {
         ...state,
-        currentWid: newWid,
-        wishlists: {
-            ...state.wishlists,
-            newWid : action.newWishlist
+        wishlists : {
+            ...wishlists,
         }
     }
 }
@@ -218,19 +185,6 @@ const saveDraftTitle = (state, action) => {
     }
 }
 
-const addWishlistFromDraft = (state, action) => {
-    return {
-        ...state,
-        wishlists: {
-            ...state.wishlists,
-            [state.newWishlist.id]: {
-                ...state.newWishlist,
-                updatedDate: Date.now()
-            }
-        },
-        newWishlist: {}
-    }
-}
 
 const deleteItemInEdit = (state, action) => {
     let newItems = state.wishlists[action.wid].items
@@ -320,14 +274,27 @@ const rerollChangeInEdit = (state, action) => {
         }
 }
 
+const addPastWishlists = (state, action) => {
+    let pastWishlists = {}
+    action.pastWishlists.map(past=> {
+        pastWishlists[past.wid] = past
+    })
+
+    return {
+        ...state,
+        pastWishlists: pastWishlists
+    }
+}
+
 
 const wishlistReducer = (state = initState, action) => {
     switch(action.type) {
         //home page
-        case ADD_WISHLIST : return addWishlist(state, action)
+        case ADD_WISHLISTS : return addWishlists(state, action)
         case EXAMPLE_WISHLIST : return addExample(state, action)
         case REMOVE_WISHLIST : return removeWishlist(state, action)
         case TOGGLE_ITEM : return toggleItem(state, action)
+
         //draft page
         case CREATE_NEW_WISHLIST : return createNewWishlist(state, action)
         case CLEAR_DRAFT : return clearDraft(state, action)
@@ -335,13 +302,17 @@ const wishlistReducer = (state = initState, action) => {
         case CHANGE_ITEM_NAME_IN_DRAFT : return changeItemNameInDraft(state, action)
         case DELETE_ITEM_IN_NEW : return deleteItemInNew(state, action)
         case SAVE_DRAFT_TITLE : return saveDraftTitle(state, action)
-        case ADD_WISHLIST_FROM_DRAFT : return addWishlistFromDraft(state, action)
+    
         //edit page
         case DELETE_ITEM_IN_EDIT : return deleteItemInEdit(state, action)
         case CREATE_NEW_ITEM_IN_EDIT : return createNewItemInEdit(state, action)
         case CHANGE_ITEM_NAME_IN_EDIT : return changeItemNameInEdit(state, action)
         case REROLL_CHANGE_IN_EDIT : return rerollChangeInEdit(state, action)
+
+        //view page
         case TOGGLE_ITEM_STATUS : return toggleItemStatus(state, action)
+
+        case ADD_PAST_WISHLISTS: return addPastWishlists(state, action)
         default: return state
     }
 }

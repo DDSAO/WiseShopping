@@ -1,23 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import HoverBox from './HoverBox';
 import EditableTitle from './EditableTitle';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
-    createNewItemInEdit, 
     deleteItemInEdit, 
     showNotification, 
     hideNotification,
-    clearDraft,
-    jumpTo
+    jumpTo,
+    uploadEdittedWishlist
 } from '../redux/';
 
 import ItemAdder from './ItemAdder';
 import ItemCard from './ItemCard';
 
 import { useHistory, useParams } from 'react-router-dom';
-import { addWishlistFromDraft } from '../redux/';
 import Empty from './Empty';
-import { rerollChangeInEdit } from '../redux/wishlist/wishlistActions';
+
 
 import Background from '../asset/background.jpg'
 import { styleButton, styleButtonConfirm, styleButtonCancel } from '../css/css';
@@ -42,21 +40,12 @@ const styleFrame = {
     backdropFilter: "blur(50px) brightness(120%)",
 }
 
-const styleAddNew = {
-    border: "1px solid black",
-    borderRadius: "10px",
-    width:"60%",
-    height:"50px",
-    marginTop: "auto",
-    display: "flex",
-    justifyContent: "center",
+const styleItemBox = {
+    display:"flex",
+    flexDirection: "column",
     alignItems: "center",
-    userSelect: "none",
-}
-
-const styleAddNewHovered = {
-    ...styleAddNew,
-    background: "#DCDCDC"
+    justifyContent: "flex-start",
+    overflow:"scroll",
 }
 
 const styleButtonFrame= {
@@ -73,15 +62,24 @@ const EditWishlist = () => {
     let { wid } = useParams()
     const history = useHistory()
     const wishlist = useSelector(state => state.wishlist.wishlists[wid])
+    const user = useSelector(state=> state.interface.user)
     const dispatch = useDispatch()
 
     const [isAddingHovered, setAddingHovered] = useState(false)
     const [currentAddingText, setAddingText] = useState(false)
 
+    const itemBoxRef = useRef(null)
+
+    //scroll down pages when inserted or deleted
+    useEffect(()=> {
+        if (wishlist.items) itemBoxRef.current.scrollTop = itemBoxRef.current.scrollHeight
+    }, [wishlist.items])
+
     if (wishlist === undefined) {
         return <Empty message="No wishlist found"/>
     }
 
+    
 
     const handleCancel = () => {
         dispatch(showNotification(
@@ -92,7 +90,7 @@ const EditWishlist = () => {
             "no",
             //onCancel
             ()=>{
-                dispatch(rerollChangeInEdit(wid))
+                //dispatch(rerollChangeInEdit(wid))
                 dispatch(hideNotification())
                 history.push("/")
                 dispatch(jumpTo('home'))
@@ -100,27 +98,31 @@ const EditWishlist = () => {
             "yes",
             //confirm
             ()=>{
-                dispatch(hideNotification())
-                history.push("/")
+                dispatch(uploadEdittedWishlist(user.id, wid, wishlist))
+                history.push('/')
                 dispatch(jumpTo('home'))
-            },)) 
+                dispatch(hideNotification())
+            })) 
     }
     return (
         <div style={styleBackground}>
             <div style={styleFrame}>
                 <EditableTitle name={wishlist.name}/>
-                {wishlist.items ? Object.entries(wishlist.items).map(([key, item], index) => {
-                    return <ItemCard 
-                        key={key} index={index+1} iid={item.iid} wid={wishlist.id}
-                        name={item.name} usedIn="edit"
-                        onClickF={()=>{
-                            dispatch(deleteItemInEdit(wishlist.id, item.iid))}}/>
-                }) : null
-                }
-                <VirtualItemCard text={currentAddingText}/>
-                {
-                    //isAddingHovered ? <VirtualItemCard /> : null
-                }
+                <div ref={itemBoxRef} style={styleItemBox}>
+                    {wishlist.items ? Object.entries(wishlist.items).map(([key, item], index) => {
+                        return <ItemCard 
+                            key={key} index={index+1} iid={item.iid} wid={wishlist.wid}
+                            name={item.name} usedIn="edit"
+                            onClickF={()=>{
+                                dispatch(deleteItemInEdit(wishlist.wid, item.iid))}}/>
+                    }) : null
+                    }
+                    {isAddingHovered ? 
+                        <VirtualItemCard 
+                            text={currentAddingText} 
+                            index={wishlist.items ? (Object.keys(wishlist.items).length + 1) : 1}/>
+                        : null}
+                </div>
                 <ItemAdder 
                     text="+ Add New Item" usedIn="edit" wid={wid}
                     setHovered = {setAddingHovered}
@@ -136,7 +138,7 @@ const EditWishlist = () => {
                         defaultStyle={styleButton}
                         hoveredStyle={styleButtonConfirm}
                         onClickF={()=>{
-                            dispatch(addWishlistFromDraft())
+                            dispatch(uploadEdittedWishlist(user.id, wid, wishlist))
                             history.push('/')
                             dispatch(jumpTo('home'))
                         }}

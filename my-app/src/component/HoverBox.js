@@ -2,19 +2,18 @@ import React, { useState, useEffect } from 'react';
 
 const HoverBox = (props) => {
     const [isHovered, setHovered] = useState(false)
-    const mouseEnter = props.onMouseEnterF ? props.onMouseEnterF : () => null
-    const mouseLeave =  props.onMouseLeaveF ? props.onMouseLeaveF : () => null
-
+    
     return (
     <div 
         style={isHovered ? props.hoveredStyle : props.defaultStyle}
+        className = {props.givenClassName}
         onMouseEnter={() => {
             setHovered(true)
-            mouseEnter()
+            if (props.onMouseEnterF) props.onMouseEnterF()
         }}
         onMouseLeave={() => {
             setHovered(false)
-            mouseLeave()
+            if (props.onMouseLeaveF) props.onMouseLeaveF()
         }}
         onClick={props.onClickF ? props.onClickF : null}
     >

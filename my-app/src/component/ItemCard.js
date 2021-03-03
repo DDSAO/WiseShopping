@@ -1,45 +1,44 @@
 import React, {useState, useEffect, useRef} from 'react';
-import HoverBox from './HoverBox';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { changeItemNameInDraft, changeItemNameInEdit } from '../redux/wishlist/wishlistActions';
-import { TimelineMax } from 'gsap/all';
+import { gsap } from 'gsap';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { LIGHT_RED, LIGHT_BLUE, DEEP_BLUE } from '../css/colors';
 
 import EditIcon from '@material-ui/icons/Edit';
-import { flexCenter } from '../css/css';
+import { flexCenter, styleIcon } from '../css/css';
 
 
 const styleCard = {
+    ...flexCenter,
+    marginTop: "10px",
     width: "60%",
     height: "40px",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     background: "rgba(255,255,255,0.2)"
 }
 const styleCardDeleting = {
     ...styleCard,
     background: LIGHT_RED,
 }
-
+const styleIndex = {
+    ...flexCenter,
+    width: "30px",
+}
 const styleLabel = {
-    position: "relative",
-    left: "15px",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent:"center",
-    alignItems: "center",
-    
-    height:"100%",
+    ...flexCenter,
     textAlign:"center",
     margin:"0 20px",
     overflow: "hidden",
 }
+
 const styleLabelHovered = {
     ...styleLabel,
     background: LIGHT_BLUE,
+}
+const styleText = {
+    ...flexCenter,
+    position: "relative",
+    left: "15px",
 }
 const styleEditIcon = {
     ...flexCenter,
@@ -49,15 +48,7 @@ const styleEditIcon = {
     left: "0px",
     top:"30px",
 }
-const styleIcon = {
-    height: "30px",
-    width: "30px",
-    borderRadius:"10px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    userSelect: "none",
-}
+
 const styleIconHovered = {
     ...styleIcon,
 }
@@ -92,7 +83,7 @@ const Text = (props) => {
     const t1 = useRef(null)
 
     useEffect(()=> {
-        t1.current = new TimelineMax({paused:true})
+        t1.current = gsap.timeline({paused:true})
             .fromTo(iconRef.current, 0.2, {css:{top:"30px"}}, {css:{top:"0px"}})
             
     }, [])
@@ -100,15 +91,19 @@ const Text = (props) => {
     <div
         onMouseEnter = {()=> {
             setHovered(true)
-            t1.current.play()
+            if (t1.current) {
+                t1.current.play()
+            } 
         }}
         onMouseLeave = {()=> {
             setHovered(false)
-            t1.current.reverse()
+            if (t1.current) {
+                t1.current.reverse()
+            }        
         }}
         style={isHovered ? styleLabelHovered : styleLabel}
     >
-        <div style={flexCenter}>{props.name}</div>
+        <div style={styleText}>{props.name}</div>
         <div ref = {iconRef} style={styleEditIcon}>
             <EditIcon style={{fill: DEEP_BLUE, fontSize:"small", overflow:"hidden"}}/>
         </div>
@@ -161,7 +156,7 @@ const ItemCard = (props) => {
 
  
     useEffect(()=> {
-        deleteRotate.current = new TimelineMax({paused:true, repeat:-1})
+        deleteRotate.current = gsap.timeline({paused:true, repeat:-1})
         .to(deleteRef.current, 0.08, {
             rotation: 20,
             transformOrigin: "50% 50%",
@@ -205,11 +200,12 @@ const ItemCard = (props) => {
 
     return (
         <div style={isDeleteHovered? styleCardDeleting: styleCard}>
+            
             <div 
                 style={styleLabel}
                 onClick={()=>{setDisplaying(false)}}
             >
-                {props.index}.  
+                <div style={styleIndex}>{props.index}.  </div>
                 {isDisplaying ? 
                     <Text name={currentText} index={props.index} onClickF={()=>{setDisplaying(false)}}/> : 
                     <EditText 
@@ -219,14 +215,14 @@ const ItemCard = (props) => {
                         }}
                     />
                 }
-            <div 
-                ref = {deleteRef}
-                style={isDeleteHovered ? styleIconHovered : styleIcon}
-                onMouseEnter={()=>setDeleteHovered(true)}
-                onMouseLeave={()=>setDeleteHovered(false)}
-                onClick={props.onClickF}
-            ><DeleteOutlineIcon style={{fill:"tomato"}}/></div>
-        </div>
+                <div 
+                    ref = {deleteRef}
+                    style={isDeleteHovered ? styleIconHovered : styleIcon}
+                    onMouseEnter={()=>setDeleteHovered(true)}
+                    onMouseLeave={()=>setDeleteHovered(false)}
+                    onClick={props.onClickF}
+                ><DeleteOutlineIcon style={{fill:"tomato"}}/></div>
+            </div>
         </div>
     )
 }

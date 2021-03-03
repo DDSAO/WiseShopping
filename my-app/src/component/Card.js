@@ -30,19 +30,6 @@ const Card = (props) => {
     } else {
         content = props.text ? (isCardHovered ? props.text : props.children) : props.children
     }
-    /*
-    return (
-        <div 
-            style={isCardHovered ? styleCardHovered : styleCard}
-            onMouseEnter={() => setCardHovered(true)}
-            onMouseLeave={() => setCardHovered(false)}
-            onClick={props.onClickF ? props.onClickF : null}
-        >
-
-            {content}
-        </div>
-    )
-    */
    return (
         <AnimatedBorder
             style={isCardHovered ? styleCardHovered : styleCard}

@@ -1,18 +1,24 @@
-const Wishlist = require('../model/Wishlist')
+const WishlistModel = require('../model/Wishlist')
+const UserModel = require('../model/User')
+const IndexModel = require('../model/Index')
 const express = require("express");
 const router = express.Router();
-const mongoose = require('mongoose')
-const {isAuth} = require('../initPassport')
+const {isAuth, hasRight} = require('../initPassport')
 
 
 router.get('/', (req, res) => {
     res.send('wishlist page')
 })
 
+router.get('/all', async (req, res) => {
+    res.send(await WishlistModel.find({}))
+})
+
 
 router.get('/reset',  async (req, res)=> {
-    var wishlist = new Wishlist({
+    var wishlist = new WishlistModel({
         name: "example",
+        uid: 0,
         wid: 0,
         status: 0,
         createdDate: Date.now(),
@@ -29,22 +35,66 @@ router.get('/reset',  async (req, res)=> {
             7:{name: "Lamb", Category: "lamb", status: 0, iid:7},
         }
     })
-    Wishlist.deleteMany({}, (err)=>{
-        console.log("delete")
-        wishlist.save(function (err) {
-            if (err) console.log(err)
-            console.log("done")
+    var wishlist2 = new WishlistModel({
+        ...wishlist,
+        name: "past example",
+        status: 1,
+    })
+    WishlistModel.deleteMany({}, (err)=>{
+        wishlist.save((err) => {
+            wishlist2.save((err)=>console.log(err))
         })
     })
 })
 
-router.get('/fetchAll', async (req, res) => {
-    res.send(await Wishlist.find({}))
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+}
+
+//fetch all wishlists for a specific user
+router.get('/fetch/todo/:uid/', isAuth, async (req, res) => {
+    //await sleep(2000)
+    let uid = req.params.uid
+   
+    if (req.user.uid === parseInt(uid)) {
+        WishlistModel.find({uid: uid, status:0},(err, docs) => {
+            if (err) console.log(err)
+            res.send({success:1, data:docs})
+        })
+    } else {
+        res.send({success: 0, message:"you cant view others' wishlist"})
+    }
 })
 
+router.get('/fetch/past/:uid/', isAuth, async (req, res) => {
+    let uid = req.params.uid
+    if (req.user.uid === parseInt(uid)) {
+        WishlistModel.find({uid: uid, status:1},(err, docs) => {
+            if (err) console.log(err)
+            res.send({success:1, data:docs})
+        })
+    } else {
+        res.send({success: 0, message:"you cant view others' wishlist"})
+    }
+})
+router.get('/fetch/draft/:uid/', isAuth, async (req, res) => {
+    let uid = req.params.uid
+    if (req.user.uid === parseInt(uid)) {
+        WishlistModel.findOne({uid: uid, status:-1},(err, docs) => {
+            if (err) console.log(err)
+            res.send({success:1, data:docs})
+        })
+    } else {
+        res.send({success: 0, message:"you cant view others' wishlist"})
+    }
+})
+
+/*
 router.get('/fetch/:wid', async (req, res) => {
     let wid = req.params.wid
-    Wishlist.find({wid: wid}, (err, docs) => {
+    WishlistModel.find({wid: wid}, (err, docs) => {
         if (err) console.log(err)
         if (docs.length) {
             res.send(docs[0]) //send the json object directly
@@ -53,15 +103,70 @@ router.get('/fetch/:wid', async (req, res) => {
         }
     })
 })
+*/
 
-router.post('/addWishlist' , (req, res) => {
-    let wishlist = new Wishlist(req.body)
-    wishlist.save(function(err, docs) {
+
+router.post('/addWishlist', hasRight, (req, res) => {
+    IndexModel.findOneAndUpdate({}, {$inc:{wishlistIndex: 1}}, (err, index) => {
         if (err) console.log(err)
-        console.log(docs)
-        res.send(docs)
+        const draft = req.body.draft
+        if (! draft.items) {
+            draft.items = []
+        }
+        let wishlist = new WishlistModel({
+            ...req.body.draft,
+            uid: req.user.uid,
+            wid: index.wishlistIndex,
+        })
+        
+        wishlist.save(function(err, result) {
+            if (err) {
+                res.send({success: 0, message: err})
+            } else {
+                console.log(result)
+                res.send({success: 1})
+            }
+        })
+    })
+    
+    
+})
+
+router.post('/changeWishlist', hasRight, (req, res)=>{
+
+    WishlistModel.findOneAndUpdate(
+        {wid:req.body.wid}, 
+        req.body.updatedWishlist,
+        (err, result) => {
+            if (err) {
+                res.send({success: 0, message: err})
+            } else {
+                res.send({success: 1, message: result})
+            }
+        })
+})
+
+router.post('/removeWishlist', hasRight, (req, res)=>{
+    WishlistModel.deleteOne({wid: req.body.wid}, (err, docs) => {
+        if (err) {
+            res.send({success: 0, message: err})
+        } else {
+            res.send({success: 1})
+        }
     })
 })
+
+router.post('/saveAsPast', hasRight, (req, res)=>{
+    WishlistModel.findOneAndUpdate({wid:req.body.wid}, {$set:{status: 1}}, { overwrite: true },
+        (err, result) => {
+            if (err) {
+                res.send({success: 0, message: err})
+            } else {
+                res.send({success: 1, message: result})
+            }
+        })
+})
+
 
 
 module.exports = router;

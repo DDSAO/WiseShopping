@@ -10,8 +10,9 @@ const style = {
     display: "flex",
     backgroundImage: `url(${Background})`,
     backgroundPosition: "center",
-    backgroundSize: "cover",
+    backgroundSize: "cover", 
 }
+
 const HomeMain = () => {
     return ( 
         <div style={style}>

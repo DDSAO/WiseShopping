@@ -35,3 +35,10 @@ export const styleButtonCancel = {
     background: LIGHT_RED,
 }
 
+export const styleIcon = {
+    ...flexCenter,
+    height: "30px",
+    width: "30px",
+    borderRadius:"10px",
+    userSelect: "none",
+}

@@ -5,7 +5,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import ViewItemCard from './ViewItemCard';
 import Empty from './Empty';
 import HoverBox from './HoverBox';
-import { jumpTo } from '../redux';
+
+import { 
+    showNotification, 
+    hideNotification,
+    jumpTo,
+    uploadEdittedWishlist,
+    saveAsPast, 
+    uploadNotifications
+} from '../redux/';
 
 import Background from '../asset/background.jpg'
 
@@ -79,14 +87,56 @@ const ViewWishlist = (props) => {
     const history = useHistory()
     const dispatch = useDispatch()
     const wishlist = useSelector(state => state.wishlist.wishlists[wid])
-    console.log(wishlist)
+
+    const user = useSelector(state => state.interface.user)
+
     if (wishlist === undefined) {
         return <Empty message="No wishlist found"/>
     }
 
     let date = new Date(wishlist.createdDate)
-    let displayDate =date.getDate( ) + '/' + (date.getMonth( ) + 1)+'/'+ date.getFullYear( );
+    let displayDate = date.getDate( ) + '/' + (date.getMonth( ) + 1)+'/'+ date.getFullYear( );
     
+    const handleBack = () => {
+        dispatch(showNotification(
+            ("Do you want to save the changes you made ?")
+            ,
+            "no",
+            //onCancel
+            ()=>{
+                dispatch(hideNotification())
+                history.push("/")
+                dispatch(jumpTo('home'))
+            },
+            "yes",
+            //confirm
+            ()=>{
+                dispatch(uploadEdittedWishlist(user.id, wid, wishlist))
+                history.push('/')
+                dispatch(jumpTo('home'))
+        })) 
+    }
+
+    const handleFinish = () => {
+        dispatch(showNotification(
+            ("Notification on these items will be set. This wishlist will be saved in the Past Wishlists. Continue?")
+            ,
+            "no",
+            //onCancel
+            ()=>{
+                dispatch(hideNotification())
+            },
+            "yes",
+            //confirm
+            ()=>{
+                dispatch(saveAsPast(user.id, wid))
+                dispatch(uploadNotifications(wid))
+                history.push('/')
+                dispatch(jumpTo('home'))
+                dispatch(hideNotification())
+        }))
+    }
+
     return (
     <div style={styleBackground}>
         <div style={styleFrame}>
@@ -104,13 +154,12 @@ const ViewWishlist = (props) => {
             <HoverBox
                 defaultStyle={styleButton}
                 hoveredStyle={styleButtonCancel}
-                onClickF={()=>{
-                    dispatch(jumpTo('home'))
-                    history.push('/')}}
+                onClickF={()=>{handleBack()}}
             >Back</HoverBox>
             <HoverBox
                 defaultStyle={styleButton}
                 hoveredStyle={styleButtonConfirm}
+                onClickF={()=>handleFinish()}
             >Finish</HoverBox>
         </div>
         </div>

@@ -5,7 +5,7 @@ import { toggleMenu, jumpTo } from '../redux';
 import { useHistory } from 'react-router-dom';
 import { displayCenter } from '../css/css';
 
-import {TimelineLite, Power4} from "gsap/all"
+import { gsap } from "gsap"
 
 import HoverBox from './HoverBox';
 
@@ -81,9 +81,9 @@ const NavMenu = () => {
     const sideRef = useRef(null)
 
     useEffect(()=>{
-        t1.current = new TimelineLite({paused:true})
-            .fromTo(menuRef.current, 1, {css:{left:"-300px"}}, {css:{left:"0"}, ease:"Power4.eastOut"})
-            .fromTo(sideRef.current, 1, {css:{left:0}}, {css:{left:"300px"}, ease:"Power4.eastOut"}, "-=1")
+        t1.current = gsap.timeline({paused:true})
+            .fromTo(menuRef.current, 1, {css:{left:"-300px"}}, {css:{left:"0"}, ease:"Power4.out"})
+            .fromTo(sideRef.current, 1, {css:{left:0}}, {css:{left:"300px"}, ease:"Power4.out"}, "-=1")
     }, [])
 
     useEffect(()=>{

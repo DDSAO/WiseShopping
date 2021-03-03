@@ -135,18 +135,21 @@ const ItemAdder = (props) => {
         if (! inputRef.current.contains(e.target)) {
             changeText("")
             changeMode(1)
+            if (props.setHovered) props.setHovered(false)
         }
     }
     //usedIn determines which reducer to call
     //draft for draft wishlist, edit for change existed wishlist
     useEffect(()=>{
         if (! displayMode) {
+            if (props.setText && currentText === "") props.setText("Type to input item, hit Enter to confirm, hit Outside to cancel")
             addItem = () => {
                 if (inputRef.current.value === "") {
                     inputRef.current.placeholder = "Please input an item"
                     alert("Item name cannot be empty :<")
                 } else {
                     changeText("")
+                    if (props.setText) props.setText("")
                     inputRef.current.value = ""
                     props.usedIn === "edit" ? 
                         dispatch(createNewItemInEdit(props.wid, currentText)) :
@@ -159,6 +162,8 @@ const ItemAdder = (props) => {
                 document.removeEventListener("keypress", addEnterListener)
                 document.removeEventListener("click", detectClickOutside)
             }
+        } else {
+            if (props.setText) props.setText("Click the Button to add new item")
         }
     }, [displayMode, currentText])
 

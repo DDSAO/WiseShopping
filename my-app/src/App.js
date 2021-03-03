@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import './css.scss';
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,18 +21,18 @@ import Empty from './component/Empty'
 import Notification from './component/Notification';
 import EditWishlist from './component/EditWishlist';
 import Welcome from './component/Welcome';
-
-
-
-
+import LoadingFrame from './component/LoadingFrame';
 
 function App() {
   let shouldShow = useSelector(state => state.interface.notification.shouldShow)
   let isLoggedIn = useSelector(state => state.interface.isLoggedIn)
+
   if (isLoggedIn) {
     return (
       <Router>
         <Navigation />
+        <LoadingFrame />
+        {/*fetching.status ? <LoadingFrame /> : null*/}
         <NavMenu />
         {shouldShow ? <Notification /> : null}
         <Switch>
@@ -56,8 +57,11 @@ function App() {
           <Route path="/pastWishlist/:wid">
             <ViewWishlist />
           </Route>
-          <Route path='*' >
+          <Route path='/empty' >
             <Empty />
+          </Route>
+          <Route path="*">
+            <HomeMain />
           </Route>
         </Switch>
           

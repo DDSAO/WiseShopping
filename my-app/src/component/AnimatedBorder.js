@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {TimelineLite} from "gsap/all"
+import { gsap } from "gsap"
 
 const childBorder = 1
 const borderPointsVal = 3
@@ -52,7 +52,7 @@ const AnimatedBorder = (props) => {
 
 
     useEffect(()=> {
-        t1.current = new TimelineLite({paused: true})
+        t1.current = gsap.timeline({paused: true})
             .fromTo(leftRef.current, animationTime, {height: "0"}, {height: height})
             .fromTo(bottomRef.current, animationTime, {width: "0"}, {width:width}, "-="+animationTime)
             .fromTo(rightRef.current, animationTime, {height: "0"}, {height:height}, "-="+animationTime)
@@ -76,6 +76,7 @@ const AnimatedBorder = (props) => {
 
     return (
     <div 
+        className = {props.className ? props.className : null}
         style={props.style} 
         onClick={props.onClickF}
         onMouseEnter={()=> {

@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteOutlined from '@material-ui/icons/DeleteOutlined';
 import HoverBox from './HoverBox';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { styleIcon } from '../css/css';
+import { deleteNotification, fetchNotifications } from '../redux';
 
 const style = {
     width: "30%",
@@ -33,6 +35,7 @@ const MessageTitle = () => {
 const MessageCard = (props) => {
     const styleCard = {
         border: "1px solid rgba(0,0,0,0.2)",
+        margin: "5px 0",
         padding: "10px",
         height: "auto",
         display:"flex",
@@ -43,14 +46,12 @@ const MessageCard = (props) => {
     }
     const styleCardHovered = {
         ...styleCard,
-        background: "#DCDCDC"
-    }
-    const iconStyle = {
-        paddingLeft: "10px",
-        width: "auto"
+        backdropFilter: "blur(20px) brightness(120%)"
     }
 
     const [isTrashHovered, setTrashHovered] = useState(false);
+    const dispatch = useDispatch()
+    
 
     return (  
         
@@ -60,9 +61,12 @@ const MessageCard = (props) => {
         >
             <div>{props.text}</div>
             <div 
-                style={iconStyle} 
+                style={styleIcon} 
                 onMouseEnter={() => setTrashHovered(true)}
                 onMouseLeave={() => setTrashHovered(false)}
+                onClick={()=>{
+                    dispatch(deleteNotification(props.did))
+                }}
             >
                 {isTrashHovered ? <DeleteOutlined /> : <DeleteIcon />}
             </div> 
@@ -70,29 +74,29 @@ const MessageCard = (props) => {
     );
 }
 
-const MessageContainer = (props) => {
-    const style = {
-        
-    }
-    return (
-        <div style={style}>
-            {props.children}
-        </div>
-    );
-}
+
  
 const toDays = (second) => {
-    return Math.floor((Date.now() - second) / 86400)
+    return Math.floor((Date.now() - second) / (86400 * 1000 ))
 }
+
 const MessageList = () => {
-    const messages = useSelector(state => state.notification)
-    console.log(messages)
+    const messages = useSelector(state => state.notification.notifications)
+    const dispatch = useDispatch()
+    useEffect(()=> {
+        dispatch(fetchNotifications())
+    }, [])
+
+    
     return (  
         <div style={style}>
           <MessageTitle />
           <div style={styleContainer}>
-            {Object.values(messages).map((item, index) => 
-                <MessageCard key={item.nid} text={item.name + " is bought "+ toDays(item.createdDate) + " days ago"}/>)
+            {Object.values(messages).map((item) => 
+                <MessageCard 
+                    did={item.did}
+                    key={item.did} 
+                    text={item.name + " is bought "+ toDays(item.createdDate) + " days ago"}/>)
             }
           </div>
           

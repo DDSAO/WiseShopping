@@ -16,7 +16,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import { deleteWishlist, WishItem, Wishlist } from './wishlistSlice';
+import { WishItem, Wishlist } from './wishlistSlice';
 import { Divider, Hidden, Menu, Tooltip, Button } from '@material-ui/core';
 import  MenuItem from '@material-ui/core/MenuItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -41,12 +41,6 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { useHistory } from 'react-router';
-import { useDispatch } from 'react-redux';
-import { ConfirmPopUpIcon } from '../popUp/ConfirmPopUpIcon';
-import { ConfirmPopUp } from '../popUp/ConfirmPopUp';
-import { useModalHook } from '../popUp/ModalHook';
-
-
 
 
 
@@ -61,9 +55,6 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: red[500],
     },
     buttonGroup : {
-      display:"flex",
-      justifyContent:"center",
-      alignItems:"center",
       marginTop: theme.spacing(2),
     },
     editButton: {
@@ -91,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-type WishlistCardProps = {
+type PastWishlistCardProps = {
   data: Wishlist,
   onClickF: () => void,
   disabled?: boolean,
@@ -106,13 +97,13 @@ const CardItem = (props: CardItemProps) => {
   return (
   <ListItem>
     <ListItemIcon>
-      {props.checked ? <CheckBoxIcon style={{ color: green[500] }}/> : <CheckBoxOutlineBlankIcon/>}
+      {props.checked ? <CheckBoxIcon/> : <CheckBoxOutlineBlankIcon/>}
     </ListItemIcon>
     <ListItemText primary={props.title} />
   </ListItem>
 )}
 
-export const WishlistCard = (props: WishlistCardProps ) => {
+export const PastWishlistCard = (props: PastWishlistCardProps ) => {
 
   const { data } = props
   const createdDate = new Date(data.createdDate)
@@ -121,15 +112,6 @@ export const WishlistCard = (props: WishlistCardProps ) => {
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
   const [extend, setExtend] = useState(false)
   const history = useHistory()
-  const dispatch = useDispatch()
-
-  const [renderModal, setModalOpen] = useModalHook({
-    title:`Delete ${data.title}`,
-    content:"Are you sure you want to remove this wishlist?",
-    confirmButton:"yes", 
-    rejectButton:"No",
-    confirmF: () => {dispatch(deleteWishlist({wid: data.id}))}
-  })
 
   const MobileMenu = () => (
     <Menu
@@ -141,27 +123,21 @@ export const WishlistCard = (props: WishlistCardProps ) => {
       open={openMenu}
       onClose={() => {
         setOpenMenu(false)
-        setModalOpen(false)
         setAnchor(null)
       }}
     >
-      <MenuItem dense  onClick={() => history.push(`/edit/${data.id}`)}>
+      <MenuItem dense>
         <IconButton aria-label="edit" color="inherit" size="small">
           <EditIcon/>
         </IconButton>
         <p>Edit</p>
       </MenuItem>
-      <MenuItem dense onClick={(e) => {
-        setOpenMenu(false)
-        setAnchor(null)
-        setModalOpen(true) 
-      }}>
-        <IconButton aria-label="edit" color="inherit" size="small">
+      <MenuItem dense>
+        <IconButton aria-label="delete" color="inherit" size="small">
           <DeleteIcon/>
         </IconButton>
         <p>Delete</p>
       </MenuItem>
-      {renderModal}
     </Menu>
   );
 
@@ -181,49 +157,20 @@ export const WishlistCard = (props: WishlistCardProps ) => {
           </Avatar>
         }
         action={
-          <div>
-            <div className={classes.buttonGroup}>
-              <Hidden mdDown>
-                <Tooltip title="Edit" className={classes.editButton}>
-                  <IconButton size="small"  onClick={() => history.push(`/edit/${data.id}`)}>
-                    <EditIcon color="primary"/>  
-                  </IconButton>
-                </Tooltip>
-                
-                <ConfirmPopUpIcon popUpButton={ <DeleteIcon style={{color: red[500]}}/>} size="small"
-                  title={`Delete ${data.title}`}
-                  content="Are you sure you want to remove this wishlist?"
-                  confirmButton="yes" rejectButton="No"
-                  confirmF={() => {dispatch(deleteWishlist({wid: data.id}))}}
-                />
-                
-              </Hidden>
-            </div>
-            <div>
-              <Hidden mdUp>
-                <IconButton
-                aria-label="show more"
-                aria-controls={`menu-${data.id}`}
-                aria-haspopup="true"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  setAnchor(e.currentTarget);
-                  setOpenMenu(true);
-                }}
-                color="inherit"
-              >
-                <MoreIcon />
-              </IconButton>
-              <MobileMenu />
-              </Hidden>         
-            </div>      
-          </div>
+          <div className={classes.buttonGroup}>      
+              <Tooltip title="Delete">  
+                <IconButton size="small">
+                  <DeleteIcon color="secondary"/>
+                </IconButton>
+              </Tooltip>
+          </div>     
         }
         title={data.title}
         subheader={createdDate.toDateString()}
       />
       <Divider variant="middle" />
       <CardActionArea onClick={() => {
-        history.push(`/view/${data.id}`)
+        history.push(`/past/${data.id}`)
       }}>
         <CardContent className={classes.contentContainer}>
           <List

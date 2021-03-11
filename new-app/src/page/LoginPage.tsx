@@ -1,8 +1,11 @@
-import { Card, createStyles, makeStyles, Grid, TextField } from '@material-ui/core';
-import React from 'react';
+import { Card, createStyles, makeStyles, Grid, TextField, Fade, Button } from '@material-ui/core';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Star } from '../features/star/Star';
 import { Login } from '../features/user/Login';
+import { Register } from '../features/user/Register';
+import { RootState } from '../redux/store';
 
 const useStyles = makeStyles((theme) => createStyles({
   root: {
@@ -18,10 +21,19 @@ const useStyles = makeStyles((theme) => createStyles({
 
 export const LoginPage = () => {
   const classes = useStyles()
+  const showRegister = useSelector((state:RootState) => state.login.showRegister)
+
   return (
     <div className = {classes.root}>
       <Star/>
-      <Login/>
+      
+      <Fade in={showRegister} mountOnEnter unmountOnExit>
+        <Register/>
+      </Fade > 
+      <Fade in={! showRegister} mountOnEnter unmountOnExit>
+        <Login/>      
+      </Fade>
+      
     </div>
   )
 }

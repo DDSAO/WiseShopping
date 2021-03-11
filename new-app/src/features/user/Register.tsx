@@ -4,12 +4,10 @@ import { Card, createStyles, makeStyles, Grid, TextField, Typography, Container,
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { useDispatch, useSelector } from 'react-redux';
-import { displayMessage, login, toggleRegister } from './loginSlice';
+import { displayMessage, login } from './loginSlice';
 import { RootState } from '../../redux/store';
 import LoopIcon from '@material-ui/icons/Loop';
-
 import Fade, { FadeProps } from '@material-ui/core/Fade';
-
 
 const useStyles = makeStyles((theme) => createStyles({
   login: {
@@ -38,12 +36,18 @@ const useStyles = makeStyles((theme) => createStyles({
   }
 }))
 
-export const Login = (props: FadeProps) => {
+export const Register = (props: FadeProps) => {
 
   const [email, setEmail] = useState("")
 
+  const [name, setName] = useState("")
+
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState("")
+
+  const [showCPassword, setShowCPassword] = useState(false)
+  const [cPassword, setCPassword] = useState("")
+
 
   const messages = useSelector((state: RootState) => state.login.logInMessages)
   const status = useSelector((state: RootState) => state.login.status)
@@ -56,34 +60,61 @@ export const Login = (props: FadeProps) => {
   return(
   <Card className={classes.login} {...props}>
     <Container className={classes.root}>
-      <Typography className={classes.row} variant="h6" align="center">Log In</Typography>
-      <TextField  className={classes.row} id="email" label="Email" variant="outlined" 
+      <Typography className={classes.row} variant="h6" align="center">Register</Typography>
+      <TextField  className={classes.row} id="username" label="User Name" variant="outlined" 
         onChange={(e) => setEmail(e.target.value)} value={email}
       />
+      <TextField  className={classes.row} id="username" label="User Name" variant="outlined" 
+        onChange={(e) => setName(e.target.value)} value={name}
+      />
       <FormControl className={classes.row} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            endAdornment={ 
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={() => setShowPassword(!showPassword)}
-                  onMouseDown={(e: React.MouseEvent<HTMLButtonElement>) => e.preventDefault()}
-                  edge="end"
-                >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            }
-            labelWidth={70}
-          />
-        </FormControl>
+        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          endAdornment={ 
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                onMouseDown={(e: React.MouseEvent<HTMLButtonElement>) => e.preventDefault()}
+                edge="end"
+              >
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={70}
+        />
+      </FormControl>
+      <FormControl className={classes.row} variant="outlined">
+        <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+        <OutlinedInput
+          id="outlined-adornment-password"
+          type={showCPassword ? 'text' : 'password'}
+          value={cPassword}
+          onChange={(e) => setCPassword(e.target.value)}
+          endAdornment={ 
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                onMouseDown={(e: React.MouseEvent<HTMLButtonElement>) => e.preventDefault()}
+                edge="end"
+              >
+                {showPassword ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={70}
+        />
+      </FormControl>
+
         
-      {messages.forEach((message) => <Typography>Error: {message}</Typography>)}
+      {messages.forEach((message) => <Typography>{message}</Typography>)}
+
       <div className={classes.buttonGroup}>
         <Button variant="outlined" color="primary"
           onClick = {() => {
@@ -96,14 +127,14 @@ export const Login = (props: FadeProps) => {
             
           }}
         >{status === "pending" ? <LoopIcon color="primary" className="rotatingIcon"/>: "Login"}</Button>
-        <Button variant="outlined" color="primary" onClick={() => dispatch(toggleRegister())}>Register</Button>
+        <Button variant="outlined" color="primary">Register</Button>
       </div>
       <div className={classes.buttonGroup}>
         <Button variant="outlined" color="primary"
           onClick = {() => {
             setEmail("admin@admin.com")
             setPassword("password")
-          }} fullWidth
+          }}
         >Just give me a test account</Button></div>
 
     </Container>

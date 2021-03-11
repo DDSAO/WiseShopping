@@ -14,6 +14,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { toggleMenu } from './navigationSlice';
 
+import { useHistory } from "react-router-dom";
+
 //icons
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import HomeIcon from '@material-ui/icons/Home';
@@ -40,6 +42,7 @@ export const LeftDrawer = () => {
   const classes = useStyles();
   const openMenu = useSelector((state: RootState) => state.navigation.openMenu)
   const dispatch = useDispatch()
+  const history = useHistory()
 
   const toggleDrawer = () => (
     event: React.KeyboardEvent | React.MouseEvent,
@@ -69,15 +72,15 @@ export const LeftDrawer = () => {
       </List>
       <Divider />
       <List>
-        <ListItem button key={"home"}>
+        <ListItem button key={"home"} onClick={() => history.push('/')}>
           <ListItemIcon><HomeIcon /></ListItemIcon>
           <ListItemText primary={"Home"} />
         </ListItem>
-        <ListItem button key={"add"}>
+        <ListItem button key={"add"} onClick={() => history.push('/create')}>
           <ListItemIcon><PlaylistAddIcon /></ListItemIcon>
           <ListItemText primary={"Add Wishlist"} />
         </ListItem>
-        <ListItem button key={"past"}>
+        <ListItem button key={"past"} onClick={() => history.push('/past')}>
           <ListItemIcon><RestoreIcon /></ListItemIcon>
           <ListItemText primary={"Past Wishlist"} />
         </ListItem>

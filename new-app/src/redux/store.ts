@@ -4,6 +4,7 @@ import navigationReducer from '../features/navigation/navigationSlice';
 import  loginReducer from '../features/user/loginSlice';
 import  wishlistReducer  from '../features/wishlist/wishlistSlice';
 import notificationReducer from '../features/notification/notificationSlice'
+import  popUpReducer  from '../features/popUp/popUpSlice';
 
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     navigation: navigationReducer,
     wishlist: wishlistReducer,
     notification: notificationReducer,
+    popUp: popUpReducer,
   },
 });
 

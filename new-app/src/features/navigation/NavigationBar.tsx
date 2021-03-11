@@ -138,7 +138,7 @@ export  const NavigationBar = ()  => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
+      <MenuItem key={0}>
         <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
             <MailIcon />
@@ -146,7 +146,7 @@ export  const NavigationBar = ()  => {
         </IconButton>
         <p>Messages</p>
       </MenuItem>
-      <MenuItem >
+      <MenuItem key={1}>
         <IconButton aria-label="show 11 new notifications" color="inherit">
           <Badge badgeContent={11} color="secondary">
             <NotificationsIcon />
@@ -184,19 +184,7 @@ export  const NavigationBar = ()  => {
           <Typography className={classes.title} variant="h6" noWrap>
             WiseShopping
           </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
+          
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton aria-label="show 4 new mails" color="inherit">

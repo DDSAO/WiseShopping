@@ -7,6 +7,7 @@ interface LoginState {
   logInMessages: string[]
   user: User | null,
   status: "undefined" | "pending" | "fulfilled" | "rejected",
+  showRegister: boolean,
 }
 
 export interface User {
@@ -14,6 +15,7 @@ export interface User {
   id: string,
   uid: number,
   password: string,
+  
 }
 
 export interface Credential {
@@ -42,6 +44,7 @@ const initialState: LoginState = {
   logInMessages: [],
   user: null,
   status: "undefined",
+  showRegister: false,
 }
 
 export const login = createAsyncThunk<SuccessMessage, Credential, {rejectValue: ErrorMessage}>(
@@ -74,6 +77,8 @@ export const login = createAsyncThunk<SuccessMessage, Credential, {rejectValue: 
   }
 )
 
+
+
 export const loginSlice = createSlice({
   name: "login",
   initialState,
@@ -83,6 +88,9 @@ export const loginSlice = createSlice({
       ...state,
       logInMessage: action.payload
     }),
+    requireLogIn: (state) => {state.isLoggedIn = false},
+    loggedIn: (state) => {state.isLoggedIn = true},
+    toggleRegister: (state) => {state.showRegister = ! state.showRegister},
   },
   extraReducers: builder => {
     builder
@@ -109,6 +117,6 @@ export const loginSlice = createSlice({
 
 
 
-export const { displayMessage, displayMessages } = loginSlice.actions;
+export const { displayMessage, displayMessages, requireLogIn, loggedIn, toggleRegister } = loginSlice.actions;
 
 export default loginSlice.reducer;

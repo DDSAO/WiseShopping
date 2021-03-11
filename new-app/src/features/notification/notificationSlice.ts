@@ -7,7 +7,7 @@ interface NotificationState {
 }
 
 type Notification = {
-  id: number,
+  id: string,
   item: string,
   createdDate: number,
 }
@@ -17,11 +17,13 @@ const initialState: NotificationState = {
 }
 
 
+
 export const notificationSlice = createSlice({
   name: "notification",
   initialState,
   reducers: {
 
+  
   }
 })
 

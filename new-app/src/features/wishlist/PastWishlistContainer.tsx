@@ -11,7 +11,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { RootState } from '../../redux/store';
 import { createStyles } from '@material-ui/styles';
 import { Container, makeStyles, Toolbar, Tooltip, Typography, IconButton, Divider } from '@material-ui/core';
-import { WishlistCard } from './WishlistCard';
+import { PastWishlistCard } from './PastWishlistCard';
 import { Wishlist } from './wishlistSlice';
 import  SearchIcon  from '@material-ui/icons/Search';
 import  InputBase  from '@material-ui/core/InputBase';
@@ -114,7 +114,7 @@ type WishlistContainerProps = {
   wishlists: Wishlist[],
   title: string,
 }
-export const WishlistContainer = (props: WishlistContainerProps) => {
+export const PastWishlistContainer = (props: WishlistContainerProps) => {
   const classes = useStyles()
   const history = useHistory()
   const dispatch = useDispatch()
@@ -170,7 +170,7 @@ export const WishlistContainer = (props: WishlistContainerProps) => {
                 wishlist.items.some((item) => {return item.name.toLowerCase().includes(searchWord)})
             }))).map((wishlist, i) => {
               if (i % column === index) {
-                return <WishlistCard 
+                return <PastWishlistCard 
                   key={wishlist.id} 
                   data={wishlist}
                   onClickF={()=>{

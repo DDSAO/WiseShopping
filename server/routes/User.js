@@ -32,7 +32,7 @@ function sleep(ms) {
 
 router.post('/verifyEmail', async (req, res)=> {
     let email = req.body.email
-    await sleep(2000)
+    //await sleep(2000)
     UserModel.findOne({email: email}, (err, result) => {
         if (err) console.log(err)
         if (result === null) {
@@ -45,7 +45,7 @@ router.post('/verifyEmail', async (req, res)=> {
 
 router.post('/verifyName', async (req, res)=> {
     let name = req.body.name
-    await sleep(2000)
+    //await sleep(2000)
     UserModel.findOne({name: name}, (err, result) => {
         if (err) console.log(err)
         if (result === null) {
@@ -57,7 +57,7 @@ router.post('/verifyName', async (req, res)=> {
 })
 
 router.post('/createAccount', async (req, res)=> {
-    await sleep(4000)
+    //await sleep(4000)
     IndexModel.findOneAndUpdate({}, {$inc:{userIndex: 1}}, (err, indexResult)=>{
         //handle error
         if (err) {

@@ -8,6 +8,7 @@ import { WishlistContainer } from '../features/wishlist/WishlistContainer';
 import { NotificationContainer } from '../features/notification/NotificationContainer';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { PastWishlistContainer } from '../features/wishlist/PastWishlistContainer';
 
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -21,37 +22,23 @@ const useStyles = makeStyles((theme) => createStyles({
     flexDirection:"row",
   },
   wishlistContainer : {
-    [theme.breakpoints.down('md')]: {
-      width: "100%",
-    },
-    width: "70%",
+    width: "100%",
     display: "flex",
     flexDirection: "row",
     justifyContent:"start",
     alignItems: "flex-start",
+    marginBottom: theme.spacing(3),
   },
-  notificationContainer: {
-    [theme.breakpoints.down('md')]: {
-      width: "100%",
-    },
-    width: "30%",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent:"start",
-    alignItems: "flex-start", 
-  }
+ 
 }))
 
-export const MainPage = () => {
+export const PastPage = () => {
   const classes = useStyles()
-  const wishlists = useSelector((state: RootState) => state.wishlist.wishlists)
+  const wishlists = useSelector((state: RootState) => state.wishlist.pastWishlists)
   return ( 
       <div className={classes.root}>
-        <Container className={classes.wishlistContainer}>
-          <WishlistContainer wishlists={wishlists} title="My Wishlists"/>
-        </Container>
-        <Container className={classes.notificationContainer}>
-          <NotificationContainer />
+        <Container className={classes.wishlistContainer}> 
+          <PastWishlistContainer wishlists={wishlists} title="Past Wishlists"/>
         </Container>
       </div>
   );

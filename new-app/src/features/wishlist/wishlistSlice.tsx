@@ -2,21 +2,17 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from '../../redux/store';
 import { getServerUrl } from '../Global';
 
-export enum WishlistStatus {
-  DRAFT = "draft",
-  DOING = "doing",
-  DONE = "done",
-}
 
 
 
 export type Wishlist = {
   title: string,
   id: number,
-  status: WishlistStatus,
+  status: "draft"|"doing"|"done",
   items: WishItem[],
   createdDate: number,
   updatedDate: number,
+  color: "blue" | "red" | "green" | "default",
 }
 
 export interface WishItem {
@@ -27,14 +23,34 @@ export interface WishItem {
 
 interface WishlistState {
   wishlists: Wishlist[],
+  pastWishlists: Wishlist[],
+  fetchStatus: "fetching" | "fetched",
 } 
 
 const initialState: WishlistState = {
+  fetchStatus: "fetched",
+  pastWishlists: [
+    {
+      title: "best wishlist",
+      id: 0,
+      status: "doing",
+      items: [
+        {name: "Egg", checked: false, id:0},
+        {name: "Egg2", checked: false, id:1},
+        {name: "Egg3", checked: false, id:2},
+        {name: "Egg4", checked: false, id:3},
+        {name: "Egg5", checked: false, id:4},
+      ],
+      createdDate: Date.now() - 100,
+      updatedDate: Date.now(),
+      color: "red",
+    }
+  ],
   wishlists: [
     {
-      title: "test wishlist",
+      title: "aest wishlist",
       id: 99,
-      status: WishlistStatus.DRAFT,
+      status: "draft",
       items: [
         {name: "Egg", checked: false, id:0},
         {name: "Egg2", checked: false, id:1},
@@ -42,26 +58,14 @@ const initialState: WishlistState = {
         {name: "Egg4", checked: false, id:3},
         {name: "Egg5", checked: false, id:4},
       ],
-      createdDate: Date.now(),
+      createdDate: Date.now() + 100,
       updatedDate: Date.now(),
+      color: "default",
     },
     {
-      title: "test wishlist",
-      id: 0,
-      status: WishlistStatus.DRAFT,
-      items: [
-        {name: "Egg", checked: false, id:0},
-        {name: "Egg2", checked: false, id:1},
-        {name: "Egg3", checked: false, id:2},
-        {name: "Egg4", checked: false, id:3},
-        {name: "Egg5", checked: false, id:4},
-      ],
-      createdDate: Date.now(),
-      updatedDate: Date.now(),
-    }, {
-      title: "test wishlist",
+      title: "cest wishlist",
       id: 1,
-      status: WishlistStatus.DRAFT,
+      status: "doing",
       items: [
         {name: "Egg", checked: false, id:0},
         {name: "Egg2", checked: false, id:1},
@@ -75,12 +79,13 @@ const initialState: WishlistState = {
         {name: "Egg5", checked: false, id:9},
         {name: "Egg5", checked: false, id:10},
       ],
-      createdDate: Date.now(),
+      createdDate: Date.now() ,
       updatedDate: Date.now(),
+      color: "blue",
     }, {
-      title: "test wishlist",
+      title: "dest wishlist",
       id: 2,
-      status: WishlistStatus.DRAFT,
+      status: "doing",
       items: [
         {name: "Egg", checked: false, id:0},
         {name: "Egg2", checked: false, id:1},
@@ -90,16 +95,51 @@ const initialState: WishlistState = {
       ],
       createdDate: Date.now(),
       updatedDate: Date.now(),
+      color: "green",
     },
+    
   ],
 }
+
 
 export const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-
+    toggleCheck: (state, action: PayloadAction<{wid: number, id:number}>) => {
+      let wishlist = state.wishlists.find((wishlist) => wishlist.id === action.payload.wid)!
+      wishlist.updatedDate = Date.now()
+      let item = wishlist.items.find((item) => item.id === action.payload.id)!
+      item.checked = ! item.checked
+    },
+    removeItem: (state, action: PayloadAction<{wid: number, id:number}>) => {
+      const { wid, id } = action.payload
+      const wishlist = state.wishlists.find((wishlist) => wishlist.id === wid)!
+      const items = wishlist.items.filter((item) => item.id !== id)
+      wishlist.items = items
+    },
+    deleteWishlist: (state, action: PayloadAction<{wid: number}>) => {
+      const { wid } = action.payload
+      state.wishlists= state.wishlists.filter((wishlist) => wishlist.id !== wid)
+    },
+    deletePastWishlist: (state, action: PayloadAction<{wid: number}>) => {
+      const { wid } = action.payload
+      state.pastWishlists = state.pastWishlists.filter((wishlist) => wishlist.id !== wid)
+    },
+    finishWishlist: (state, action: PayloadAction<{wid: number}>) => {
+      let pastWishlists:Wishlist[] = []
+      state.wishlists = state.wishlists.filter((wishlist) => {
+        if (wishlist.id !== action.payload.wid) return true
+        wishlist.updatedDate = Date.now()
+        wishlist.status = "done"
+        pastWishlists = [...state.pastWishlists, wishlist]
+        return false
+      })
+      state.pastWishlists = pastWishlists
+    }
   }
 })
+
+export const { toggleCheck, removeItem, deleteWishlist, deletePastWishlist, finishWishlist } = wishlistSlice.actions
 
 export default wishlistSlice.reducer;
